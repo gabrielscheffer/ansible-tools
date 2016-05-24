@@ -1,11 +1,34 @@
 ---
 
-- name: Compile and install Concert(certs letsencrypt.org)
+- name: Create my-certs dir on /etc/ssl/certs/
+  file: path={{ my_certs_dir }} state=directory mode=0755
+
+- name: Register the current concert version (if any)
+  command: "{{ ansible_env.HOME }}/go/bin/concert"
+  ignore_errors: yes
+  register: concert_installed
+  changed_when: false
+
+- name: Compile and install concert (certs letsencrypt.org)
   command: go get -u github.com/minio/concert
+  when: concert_installed|failed
   environment:
     PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
     GOPATH: "{{ ansible_env.HOME }}/go"
 
-- name: Add the Concert bin directory to the PATH environment variable for all users
-  copy: src=concert-bin.sh
-        dest=/etc/profile.d
+- name: "Check deadline and register the current certificate for {{ domain }}"
+  stat: path={{ my_certs_dir }}/public.crt
+  ignore_errors: yes
+  register: cert_file
+
+- name: "Generate certificate 90 days for {{ domain }} - {{ email }}"
+  command: concert gen --dir {{ my_certs_dir }} {{ email }} {{ domain }}
+  when: (cert_file|failed) or 
+        (not cert_file.stat.exists) or 
+        (ansible_date_time.epoch|float - cert_file.mtime > 60*60*24*85)
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
+
+
+# - name: Debug
+#   debug: msg="domain= {{ domain }}"
