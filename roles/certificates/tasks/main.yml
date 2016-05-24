@@ -1,0 +1,11 @@
+---
+
+- name: Compile and install Concert(certs letsencrypt.org)
+  command: go get -u github.com/minio/concert
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
+    GOPATH: "{{ ansible_env.HOME }}/go"
+
+- name: Add the Concert bin directory to the PATH environment variable for all users
+  copy: src=concert-bin.sh
+        dest=/etc/profile.d
