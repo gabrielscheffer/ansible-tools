@@ -1,7 +1,10 @@
 ---
 
-- name: Change locale and timezone to pt_BR and America/Sao_Paulo
-  command: timedatectl set-timezone America/Sao_Paulo && localectl set-locale LANG=pt_BR.utf8
+- name: Change locale to pt_BR
+  command: localectl set-locale LANG=pt_BR.utf8
+
+- name: Change timezone to America/Sao_Paulo
+  command: timedatectl set-timezone America/Sao_Paulo 
 
 #- include: epel.yml
 
