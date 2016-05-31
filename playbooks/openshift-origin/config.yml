@@ -1,0 +1,7 @@
+---
+
+- hosts: all
+  remote_user: centos
+  roles:
+    - utils
+#    - docker-config

@@ -1,0 +1,10 @@
+---
+
+
+- name: Install docker
+  yum: name=docker state=present
+
+- include: docker_pool.yml
+
+- name: Enable docker service
+  service: name=docker enabled=yes state=started
