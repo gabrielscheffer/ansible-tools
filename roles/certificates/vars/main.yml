@@ -1,0 +1,5 @@
+---
+
+my_certs_dir: /etc/ssl/certs/my-certs
+
+cert_days: 85

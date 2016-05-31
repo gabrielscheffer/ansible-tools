@@ -25,7 +25,7 @@
   command: concert gen --dir {{ my_certs_dir }} {{ email }} {{ domain }}
   when: (cert_file|failed) or 
         (not cert_file.stat.exists) or 
-        (ansible_date_time.epoch|float - cert_file.mtime > 60*60*24*85)
+        (ansible_date_time.epoch|float - cert_file.stat.mtime > 60*60*24*{{ cert_days }})
   environment:
     PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
 
