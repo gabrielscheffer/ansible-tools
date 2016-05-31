@@ -6,14 +6,11 @@
 - name: Change timezone to America/Sao_Paulo
   command: timedatectl set-timezone America/Sao_Paulo 
 
-#- include: epel.yml
-
-- name: Debug
-  debug: msg="epel_repo_url= {{ epel_repo_url }},epel_repo_gpg_key_url= {{ epel_repo_gpg_key_url }}"
+- include: epel.yml
 
 - name: Disable Epel for security purposes
   command: sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
 
-- name: Installing {{ item }}
+- name: Installing essential packages
   yum: name={{ item }} state=present enablerepo=epel
   with_items: "{{ packages }}"
