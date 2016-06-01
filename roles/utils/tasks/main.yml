@@ -4,7 +4,7 @@
   command: localectl set-locale LANG={{ locale }}
   when: ansible_distribution == 'CentOS'
 
-- name: Adjust locale for RedHat - 
+- name: Adjust locale for RedHat - {{ locale }}
   when: ansible_distribution == 'RedHat'
   replace: dest=/etc/sysconfig/i18n regexp='(LANG.*\nSYSFONT.*"$)' replace='LANG="{{ locale }}"\nSYSFONT="latarcyrheb-sun16"'
 
