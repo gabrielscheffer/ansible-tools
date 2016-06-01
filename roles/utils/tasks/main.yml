@@ -29,9 +29,18 @@
   
 - include: epel.yml
 
-- name: Disable Epel for security purposes
+- name: Disable EPEL for security purposes
   command: sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
 
 - name: Installing essential packages
   yum: name={{ item }} state=present enablerepo=epel
   with_items: "{{ packages }}"
+
+- name: Enable SELINUX=enforcing and SELINUXTYPE=targeted
+  selinux: policy=targeted state=enforcing
+
+- name: Enable SELinux persistent virt_use_nfs
+  seboolean: name=virt_use_nfs state=yes persistent=yes
+
+- name: Enable SELinux persistent virt_sandbox_use_nfs
+  seboolean: name=virt_sandbox_use_nfs state=yes persistent=yes
