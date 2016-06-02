@@ -1,0 +1,3 @@
+---
+
+path_password_file: /etc/origin/master/htpasswd
