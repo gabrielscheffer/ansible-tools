@@ -4,7 +4,9 @@
 - name: Install docker
   yum: name=docker state=present
 
-- include: docker_pool.yml
+#- include: docker_pool.yml
 
 - name: Enable docker service
   service: name=docker enabled=yes state=started
+
+- include: docker_cleanup.yml

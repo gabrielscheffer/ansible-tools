@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: "{{ variable_host | default('all') }}"
   roles:
     - utils
-#    - docker-config
+    - docker-config
