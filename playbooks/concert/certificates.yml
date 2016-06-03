@@ -1,7 +1,5 @@
 ---
 
-- hosts: masters
-  remote_user: centos
+- hosts: "{{ variable_host | default('masters') }}"
   roles:
     - certificates
-  become: no
