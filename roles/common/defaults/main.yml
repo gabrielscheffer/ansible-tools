@@ -1,6 +1,6 @@
 ---
 locale: pt_BR.utf8
-timezone: America/Sao_Paulo 
+timezone: America/Sao_Paulo
 user: schefferdesouza
 packages:
   - ansible
