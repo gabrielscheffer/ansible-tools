@@ -1,6 +1,6 @@
 ---
 
-- name: Create my-certs dir on /etc/ssl/certs/
+- name: Create my-certs dir on {{ my_certs_dir }}
   file: path={{ my_certs_dir }} state=directory mode=0755
 
 - name: Register the current concert version (if any)
