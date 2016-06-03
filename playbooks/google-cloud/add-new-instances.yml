@@ -1,0 +1,15 @@
+---
+
+- name: Create Google Cloud instances
+  hosts: localhost
+  gather_facts: no
+  connection: local
+  roles:
+    - gce-provisioning
+
+
+- name: Manage new instances
+  hosts: new_instances
+  roles:
+    - common
+    - docker-config

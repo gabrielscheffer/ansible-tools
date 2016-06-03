@@ -1,0 +1,7 @@
+---
+
+- name: OpenShift Origin Pre Configuration
+  hosts: "{{ variable_host | default('all') }}"
+  roles:
+    - common
+    - docker-config

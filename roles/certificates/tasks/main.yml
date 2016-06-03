@@ -9,7 +9,7 @@
   register: concert_installed
   changed_when: false
 
-- name: Compile and install concert (certs letsencrypt.org)
+- name: Compile and install concert (github.com/minio/concert)
   command: go get -u github.com/minio/concert
   when: concert_installed|failed
   environment:
@@ -28,7 +28,3 @@
         (ansible_date_time.epoch|float - cert_file.stat.mtime > 60*60*24*{{ cert_days }})
   environment:
     PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
-
-
-# - name: Debug
-#   debug: msg="domain= {{ domain }}"

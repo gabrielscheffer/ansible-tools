@@ -1,0 +1,6 @@
+---
+
+- name: Install minio/concert console (https://letsencrypt.org)
+  hosts: "{{ variable_host | default('masters') }}"
+  roles:
+    - certificates

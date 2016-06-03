@@ -1,0 +1,10 @@
+---
+
+names: name1,name2
+machine_type: n1-standard-1
+image: debian-7
+service_account_email: unique-id@developer.gserviceaccount.com
+pem_file: /path/to/your/pkey.pem
+project_id: project-id
+zone: us-central1-f
+tags: origin-node
