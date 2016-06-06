@@ -11,6 +11,7 @@ packages:
   - docker
   - git
   - htop
+  - iotop
   - iptables-services
   - net-tools
   - pyOpenSSL
