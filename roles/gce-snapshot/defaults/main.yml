@@ -1,4 +1,0 @@
----
-
-backup_disks: '[ "disk_name" ]'
-zone: us-central1-x

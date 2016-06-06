@@ -1,7 +1,7 @@
 ---
 
 - name: Execute backup on gce instances
-  hosts: production
+  hosts: all
   serial: 1
   roles:
     - gce-snapshot
