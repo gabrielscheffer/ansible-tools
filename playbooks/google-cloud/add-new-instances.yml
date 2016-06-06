@@ -12,4 +12,6 @@
   hosts: new_instances
   roles:
     - common
+    - gce-stackdriver-agent
     - docker-config
+

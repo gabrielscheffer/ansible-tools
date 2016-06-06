@@ -9,6 +9,7 @@
      pem_file: "{{ pem_file }}"
      project_id: "{{ project_id }}"
      zone: "{{ zone }}"
+     service_account_permissions: "{{ service_account_permissions }}"
      tags: "{{ tags }}"
   register: gce
 

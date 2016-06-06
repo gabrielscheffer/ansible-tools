@@ -7,4 +7,5 @@ service_account_email: unique-id@developer.gserviceaccount.com
 pem_file: /path/to/your/pkey.pem
 project_id: project-id
 zone: us-central1-f
+service_account_permissions: cloud-platform
 tags: origin-node
