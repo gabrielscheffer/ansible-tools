@@ -1,11 +1,21 @@
 ---
+#global
+pem_file: /path/to/your/pkey.pem
+project_id: project-id
+service_account_email: unique-id@developer.gserviceaccount.com
+zone: us-centralx-xx
 
+#instance
 names: name1,name2
 machine_type: n1-standard-1
 image: centos-7
-service_account_email: unique-id@developer.gserviceaccount.com
-pem_file: /path/to/your/pkey.pem
-project_id: project-id
-zone: us-central1-f
+persistent_boot_disk: true
+disk_auto_delete: false
+ip_forward: false
 service_account_permissions: cloud-platform
-tags: origin-node
+tags: ansible-generated
+
+#persistentdisk
+disk_type: pd-ssd
+disk_mode: READ_WRITE
+size_gb: 10

@@ -4,7 +4,6 @@ timezone: America/Sao_Paulo
 user: schefferdesouza
 packages:
   - ansible
-  - atomic-openshift-utils
   - bash-completion
   - bind-utils
   - bridge-utils

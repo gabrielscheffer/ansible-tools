@@ -7,9 +7,9 @@
   roles:
     - gce-provisioning
 
-
 - name: Manage new instances
   hosts: new_instances
+  connection: ssh
   roles:
     - common
     - gce-stackdriver-agent

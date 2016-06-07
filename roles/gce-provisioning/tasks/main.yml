@@ -5,13 +5,30 @@
      instance_names: "{{ names }}"
      machine_type: "{{ machine_type }}"
      image: "{{ image }}"
-     service_account_email: "{{ service_account_email }}"
+     ip_forward: "{{ ip_forward }}"
      pem_file: "{{ pem_file }}"
      project_id: "{{ project_id }}"
+     service_account_email: "{{ service_account_email }}"
      zone: "{{ zone }}"
+     persistent_boot_disk: "{{ persistent_boot_disk }}"
+     disk_auto_delete: "{{ disk_auto_delete }}"
      service_account_permissions: "{{ service_account_permissions }}"
      tags: "{{ tags }}"
   register: gce
+
+- name: Attach Persistent Disk on GCE instances
+  gce_pd:
+     name: "pd-{{ item.name }}"
+     disk_type: "{{ disk_type }}"
+     instance_name: "{{ item.name }}"
+     mode: "{{ disk_mode }}"
+     size_gb: "{{ size_gb }}"
+     pem_file: "{{ pem_file }}"
+     project_id: "{{ project_id }}"
+     service_account_email: "{{ service_account_email }}"
+     zone: "{{ zone }}"
+     
+  with_items: gce.instance_data
 
 - name: Wait for SSH to come up
   wait_for: host={{ item.public_ip }} port=22 delay=10 timeout=60 state=started
