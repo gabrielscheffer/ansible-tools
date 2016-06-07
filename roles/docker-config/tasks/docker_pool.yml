@@ -1,13 +1,13 @@
 ---
 
-#- name: Attach volume
-
 - name: Create filesystem
   filesystem: "fstype=xfs dev={{ docker_storage_devs }}"
-  ignore_errors: yes
+  run_once: true
 
 - name: Configure docker storage
   template: src=docker-storage-setup.j2 dest=/etc/sysconfig/docker-storage-setup
+  run_once: true
 
 - name: Run docker-storage-setup
   command: docker-storage-setup
+  run_once: true
