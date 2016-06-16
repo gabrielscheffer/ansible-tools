@@ -1,7 +1,7 @@
 ---
 
 - name: Copy bin images to /etc/origin/master/assets
-  synchronize: src=assets/ dest=/etc/origin/master
+  synchronize: src=assets/ dest=/etc/origin/master/assets recursive=yes
 
 - name: Pushes default.css to /etc/origin/master/assets
   template: src=default.css.j2 dest=/etc/origin/master/assets/default.css
