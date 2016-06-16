@@ -1,0 +1,12 @@
+#header-logo {
+  background-image: url("../extensions/images/header-logo.png");
+  width: 220px;
+  height: 45px;
+  margin-top: -12px
+}
+{% for service in services_icons %}
+.icon-{{ service }} {
+  background-image: url("../extensions/images/icon-{{ service }}.png");
+  width: 33px;
+  height: 33px;	
+{% endfor %}
