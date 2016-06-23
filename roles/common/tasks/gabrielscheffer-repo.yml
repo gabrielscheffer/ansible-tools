@@ -2,7 +2,7 @@
 - name: Install GabrielScheffer repo.
   yum_repository:
     name: gabrielscheffer_centos7
-    description: GabrielScheffer YUM repo
+    description: gabrielscheffer_centos7
     file: gabrielscheffer_centos7
     baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/$basearch
     gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
@@ -17,7 +17,7 @@
 - name: Install GabrielScheffer source repo.
   yum_repository:
     name: gabrielscheffer_centos7-source
-    description: GabrielScheffer YUM SRC repo
+    description: gabrielscheffer_centos7-source
     file: gabrielscheffer_centos7
     baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/SRPMS
     gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
