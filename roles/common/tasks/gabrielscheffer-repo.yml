@@ -4,9 +4,10 @@
     name: gabrielscheffer_centos7
     description: GabrielScheffer YUM repo
     file: gabrielscheffer_centos7
-    baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/$basearch/
+    baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/$basearch
     gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
     repo_gpgcheck: yes
+    gpgcheck: no
     enabled: no
     metadata_expire: 300
     sslverify: yes
@@ -21,6 +22,7 @@
     baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/SRPMS
     gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
     repo_gpgcheck: yes
+    gpgcheck: no
     enabled: no
     metadata_expire: 300
     sslverify: yes
