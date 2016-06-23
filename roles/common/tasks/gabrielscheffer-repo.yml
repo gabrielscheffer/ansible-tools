@@ -1,0 +1,31 @@
+---
+- name: Install GabrielScheffer repo.
+  yum_repository:
+    name: gabrielscheffer_centos7
+    file: gabrielscheffer_centos7
+    baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/$basearch/
+    gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
+    repo_gpgcheck: yes
+    enabled: no
+    metadata_expire: 300
+    sslverify: yes
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    state: present
+
+- name: Install GabrielScheffer source repo.
+  yum_repository:
+    name: gabrielscheffer_centos7-source
+    file: gabrielscheffer_centos7
+    baseurl: https://packagecloud.io/gabrielscheffer/centos7/el/7/SRPMS
+    gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
+    repo_gpgcheck: yes
+    enabled: no
+    metadata_expire: 300
+    sslverify: yes
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    state: present
+
+- name: Import GabrielScheffer GPG key.
+  rpm_key:
+    key: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
+    state: present

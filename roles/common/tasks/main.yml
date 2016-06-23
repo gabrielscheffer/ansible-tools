@@ -16,13 +16,17 @@
   lineinfile: dest=/etc/sudoers state=present insertafter="^Defaults    requiretty" line="Defaults:{{ user }} !requiretty" validate='visudo -cf %s'
   when: ansible_distribution == 'CentOS'
   
-- include: epel.yml
+- name: Include EPEL Repository
+  include: epel-repo.yml
 
-- name: Disable EPEL for security purposes
+- name: Include Gabriel Scheffer Repository
+  include: gabrielscheffer-repo.yml
+
+- name: Disable EPEL repo for security purposes
   command: sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
 
 - name: Installing essential packages
-  yum: name={{ item }} state=present enablerepo=epel
+  yum: name={{ item }} state=present enablerepo=epel,gabrielscheffer_centos7
   with_items: "{{ packages }}"
 
 - include: selinux.yml
