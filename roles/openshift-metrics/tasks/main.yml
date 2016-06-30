@@ -1,0 +1,58 @@
+---
+
+- name: "oc login with admin"
+  command: "oc login {{ public_master_url }} --username {{ username }} --password {{ password }} --insecure-skip-tls-verify=true"
+
+- name: "select project openshift-infra"
+  command: "oc project openshift-infra"
+
+- name: "oc delete all --selector='metrics-infra'"
+  command: oc delete all --selector="metrics-infra" 
+  ignore_errors: true
+
+- name: "oc delete sa --selector='metrics-infra'"
+  command: oc delete sa --selector="metrics-infra"
+  ignore_errors: true
+
+- name: "oc delete templates --selector='metrics-infra'"
+  command: oc delete templates --selector="metrics-infra"
+  ignore_errors: true
+
+- name: "oc delete secrets --selector='metrics-infra'"
+  command: oc delete secrets --selector="metrics-infra"
+  ignore_errors: true
+
+- name: "oc delete sa metrics-deployer"
+  command: oc delete sa metrics-deployer
+  ignore_errors: true
+
+- name: "oc delete secret metrics-deployer"
+  command: oc delete secret metrics-deployer
+  ignore_errors: true
+
+- name: "Copy metrics-deployer yaml to remote"
+  copy: src=metrics-deployer.yml dest=/tmp/metrics-deployer.yml force=yes
+
+- name: "Create serviceaccount metrics-deployer"
+  command: oc create -f /tmp/metrics-deployer.yml
+
+- name: "create secret metrics-deployer"
+  command: oc secrets new metrics-deployer nothing=/dev/null
+
+- name: "add-role-to-user edit to system:serviceaccount:openshift-infra:metrics-deployer"
+  command: oadm policy add-role-to-user edit system:serviceaccount:openshift-infra:metrics-deployer
+
+- name: "add-cluster-role-to-user cluster-reader to system:serviceaccount:openshift-infra:heapster"
+  command: oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:openshift-infra:heapster
+
+- name: "create metrics-deployer-template"
+  command: "oc create -n openshift-infra -f {{ metrics_deployer_template_url }}"
+  ignore_errors: true
+
+- name: "Deploy Stack"
+  command: >
+          oc new-app metrics-deployer-template
+          -p HAWKULAR_METRICS_HOSTNAME={{ metrics_hostname }}
+          -p USE_PERSISTENT_STORAGE={{ use_persistent_storage }}
+          -p CASSANDRA_PV_SIZE={{ cassandra_pv_size }}
+          -p IMAGE_VERSION={{ image_version }}

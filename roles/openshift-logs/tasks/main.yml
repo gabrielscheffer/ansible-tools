@@ -1,44 +1,44 @@
 ---
 
-- name: Login with admin
+- name: "Login with admin"
   command: "oc login {{ public_master_url }} --username {{ username }} --password {{ password }} --insecure-skip-tls-verify=true"
 
-- name: Create logging-deployer-template and logging-deployer-account-template on openshift namespace
+- name: "Create logging-deployer-template and logging-deployer-account-template on openshift namespace"
   command: "oc create -n openshift -f {{ deployer_template_url }}"
   ignore_errors: true
 
-- name: Create project logging(EFK stack collects logs for every project within your OpenShift Origin cluster)
+- name: "Create project logging(EFK stack collects logs for every project within your OpenShift Origin cluster)"
   command: "oc adm new-project logging --node-selector=''"
   ignore_errors: true
 
-- name: Change to project logging
+- name: "Change to project logging"
   command: "oc project logging"
 
-- name: Create dummy secrets without certificate
+- name: "Create dummy secrets without certificate"
   command: "oc secrets new logging-deployer nothing=/dev/null"
   ignore_errors: true
 
-- name: Create the deployer service account and custom roles
+- name: "Create the deployer service account and custom roles"
   command: "oc new-app logging-deployer-account-template"
   ignore_errors: true
 
-- name: Enable the logging-deployer service account to create the objects needed for a logging deployment
+- name: "Enable the logging-deployer service account to create the objects needed for a logging deployment"
   command: "{{ item }}"
   with_items: 
     - oc policy add-role-to-user edit --serviceaccount logging-deployer
     - oc policy add-role-to-user daemonset-admin --serviceaccount logging-deployer
     - oadm policy add-cluster-role-to-user oauth-editor system:serviceaccount:logging:logging-deployer
 
-- name: Enable the Fluentd service account, which the deployer will create, that requires special privileges to operate Fluentd. Add the service account user to the security context
+- name: "Enable the Fluentd service account, which the deployer will create, that requires special privileges to operate Fluentd. Add the service account user to the security context"
   command: "oadm policy add-scc-to-user privileged system:serviceaccount:logging:aggregated-logging-fluentd"
 
-- name: Give the Fluentd service account permission to read labels from all pods
+- name: "Give the Fluentd service account permission to read labels from all pods"
   command: "oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:logging:aggregated-logging-fluentd"
 
-- name: Label all nodes to deploy Fluentd
+- name: "Label all nodes to deploy Fluentd"
   command: "oc label nodes --all --overwrite logging-infra-fluentd=true"
 
-- name: Deploy EFK stack
+- name: "Deploy EFK stack"
   command: >
           oc new-app logging-deployer-template
           --param PUBLIC_MASTER_URL={{ openshift_master_url }}
@@ -57,9 +57,10 @@
           --param ES_OPS_NODESELECTOR={{ es_ops_nodeselector }}
           --param IMAGE_VERSION={{ image_version }}
 
-- name: Get logging-es DC
+- name: "Get logging-es DC"
   shell: oc get dc --no-headers --show-labels |grep logging-es | awk '{print $1}'
   register: dc_result
 
 - name: "Create PersistenteVolumeClaim for {{ dc_result.stdout }}"
+  when: dc_result.stdout != ''
   command: "oc volume dc/{{ dc_result.stdout }} --add --overwrite --name=elasticsearch-storage -t pvc --claim-size='10Gi' --claim-name=logging-es-1"
