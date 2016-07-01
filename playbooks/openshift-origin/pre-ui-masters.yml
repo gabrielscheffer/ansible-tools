@@ -3,4 +3,4 @@
 - name: Pre Configuration for Openshift Origin UI
   hosts: "{{ variable_host | default('masters') }}"
   roles:
-    - openshift-origin-ui
+    - openshift-ui
