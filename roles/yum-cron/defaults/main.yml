@@ -1,0 +1,33 @@
+---
+# Daily
+update_cmd: security
+update_messages: 'yes'
+download_updates: 'yes'
+apply_updates: 'yes'
+random_sleep: 360
+system_name: None
+emit_via: stdio
+ouput_width: 80
+email_from: root@localhost
+email_to: root
+email_host: localhost
+group_list: None
+group_package_types: mandatory, default
+debuglevel: -2
+mdpolicy: group:main
+# Hourly
+hourly_update_cmd: security
+hourly_update_messages: 'no'
+hourly_download_updates: 'no'
+hourly_apply_updates: 'no'
+hourly_random_sleep: 15
+hourly_system_name: None
+hourly_emit_via: stdio
+hourly_ouput_width: 80
+hourly_email_from: root
+hourly_email_to: root
+hourly_email_host: localhost
+hourly_group_list: None
+hourly_group_package_types: mandatory, default
+hourly_debuglevel: -2
+hourly_mdpolicy: group:main
