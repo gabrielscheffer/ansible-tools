@@ -8,7 +8,7 @@
     gpgkey: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
     repo_gpgcheck: yes
     gpgcheck: no
-    enabled: no
+    enabled: yes
     metadata_expire: 300
     sslverify: yes
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
@@ -33,3 +33,4 @@
   rpm_key:
     key: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
     state: present
+  ignore_errors: yes
