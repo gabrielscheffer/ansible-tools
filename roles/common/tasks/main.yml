@@ -2,7 +2,7 @@
 
 - include: locale_timezone.yml
 
-- name: Add Alias rm cp mv with -i in /etc/bashrc
+- name: "Add Alias rm cp mv with -i in /etc/bashrc"
   blockinfile:
     dest: /etc/bashrc
     state: present
@@ -12,21 +12,22 @@
       alias cp='cp -i'
       alias mv='mv -i'
 
-- name: Add {{ user }} user "!requiretty" in /etc/sudoers
+- name: "Add {{ user }} user !requiretty in /etc/sudoers"
   lineinfile: dest=/etc/sudoers state=present insertafter="^Defaults    requiretty" line="Defaults:{{ user }} !requiretty" validate='visudo -cf %s'
   when: ansible_distribution == 'CentOS'
   
-- name: Include EPEL Repository
-  include: epel-repo.yml
+- include: epel-repo.yml
 
-- name: Include Gabriel Scheffer Repository
-  include: gabrielscheffer-repo.yml
+- include: gabrielscheffer-repo.yml
 
-- name: Disable EPEL repo for security purposes
-  command: sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
+- name: "Disable EPEL repo for security purposes"
+  replace: dest=/etc/yum.repos.d/epel.repo regexp='^(enabled=1)$' replace='enabled=0' backup=yes
 
-- name: Installing essential packages
-  yum: name={{ item }} state=present enablerepo=epel,gabrielscheffer_centos7 update_cache=yes
+- name: "Disable Extras repo for security purposes"
+  command: yum-config-manager --disable extras
+
+- name: "Installing essential packages"
+  yum: name={{ item }} state=present enablerepo=epel update_cache=yes
   with_items: "{{ packages }}"
 
 - include: selinux.yml

@@ -1,5 +1,5 @@
 ---
-- name: Install EPEL repo.
+- name: Install latest EPEL repo.
   yum:
     name: "{{ epel_repo_url }}"
     state: present
