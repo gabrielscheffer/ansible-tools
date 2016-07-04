@@ -33,3 +33,4 @@
   rpm_key:
     key: https://packagecloud.io/gabrielscheffer/centos7/gpgkey
     state: present
+  ignore_errors: yes
