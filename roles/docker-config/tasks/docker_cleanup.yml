@@ -1,13 +1,13 @@
 ---
 
-- name: Create directory {{ scripts_dir }}
+- name: "Create directory {{ scripts_dir }}"
   file: path={{ scripts_dir }} state=directory
 
-- name: Copy docker_cleanup shell to {{ scripts_dir }}
+- name: "Copy docker_cleanup shell to {{ scripts_dir }}"
   synchronize: src=docker_cleanup.sh dest={{ scripts_dir }}
 
-- name: Chmod +x {{ scripts_dir }}/docker_cleanup.sh
+- name: "Chmod +x {{ scripts_dir }}/docker_cleanup.sh"
   file: path={{ scripts_dir }}/docker_cleanup.sh mode=0764 state=file
 
-- name: Add crontab job for docker_cleanup to run every {{ cleanup_min }} min
-  cron: name="docker_cleanup" backup=yes minute="{{ cleanup_min }}" job="{{ scripts_dir }}/docker_cleanup.sh"
+- name: "Add crontab job for docker_cleanup to run every {{ crontab_cleanup_hour }} hour and {{ crontab_cleanup_min }} min"
+  cron: name="docker_cleanup" backup=yes hour="{{ crontab_cleanup_hour }}" minute="{{ crontab_cleanup_min }}" job="{{ scripts_dir }}/docker_cleanup.sh"

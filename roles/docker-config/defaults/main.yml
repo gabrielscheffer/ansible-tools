@@ -2,4 +2,5 @@
 docker_storage_devs: /dev/sdb
 docker_storage_vg: dockerVG
 scripts_dir: /usr/scripts
-cleanup_min: 1440
+crontab_cleanup_min: 0
+crontab_cleanup_hour: 0

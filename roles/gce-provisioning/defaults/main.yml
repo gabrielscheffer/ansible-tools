@@ -1,6 +1,6 @@
 ---
 #global
-pem_file: /path/to/your/pkey.pem
+credentials_file: /path/to/your/serviceaccount.json
 project_id: project-id
 service_account_email: unique-id@developer.gserviceaccount.com
 zone: us-centralx-xx
@@ -16,6 +16,6 @@ service_account_permissions: cloud-platform
 tags: ansible-generated
 
 #persistentdisk
-disk_type: pd-ssd
+# disk_type: pd-ssd
 disk_mode: READ_WRITE
-size_gb: 10
+size_gb: 100

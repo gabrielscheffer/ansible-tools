@@ -15,19 +15,17 @@
 - name: "Add {{ user }} user !requiretty in /etc/sudoers"
   lineinfile: dest=/etc/sudoers state=present insertafter="^Defaults    requiretty" line="Defaults:{{ user }} !requiretty" validate='visudo -cf %s'
   when: ansible_distribution == 'CentOS'
-  
-- include: epel-repo.yml
 
-- include: gabrielscheffer-repo.yml
+ - include: epel-repo.yml
 
 - name: "Disable EPEL repo for security purposes"
   replace: dest=/etc/yum.repos.d/epel.repo regexp='^(enabled=1)$' replace='enabled=0' backup=yes
 
-- name: "Disable Extras repo for security purposes"
-  command: yum-config-manager --disable extras
-
 - name: "Installing essential packages"
   yum: name={{ item }} state=present enablerepo=epel update_cache=yes
   with_items: "{{ packages }}"
+
+- name: "Disable Extras repo for security purposes"
+  command: "yum-config-manager --disable extras"
 
 - include: selinux.yml

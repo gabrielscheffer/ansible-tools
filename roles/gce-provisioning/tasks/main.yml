@@ -6,7 +6,7 @@
      machine_type: "{{ machine_type }}"
      image: "{{ image }}"
      ip_forward: "{{ ip_forward }}"
-     pem_file: "{{ pem_file }}"
+     credentials_file: "{{ credentials_file }}"
      project_id: "{{ project_id }}"
      service_account_email: "{{ service_account_email }}"
      zone: "{{ zone }}"
@@ -19,11 +19,11 @@
 - name: Attach Persistent Disk on GCE instances
   gce_pd:
      name: "pd-{{ item.name }}"
-     disk_type: "{{ disk_type }}"
+     # disk_type: "{{ disk_type }}"
      instance_name: "{{ item.name }}"
      mode: "{{ disk_mode }}"
      size_gb: "{{ size_gb }}"
-     pem_file: "{{ pem_file }}"
+     credentials_file: "{{ credentials_file }}"
      project_id: "{{ project_id }}"
      service_account_email: "{{ service_account_email }}"
      zone: "{{ zone }}"
