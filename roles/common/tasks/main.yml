@@ -16,7 +16,7 @@
   lineinfile: dest=/etc/sudoers state=present insertafter="^Defaults    requiretty" line="Defaults:{{ user }} !requiretty" validate='visudo -cf %s'
   when: ansible_distribution == 'CentOS'
 
- - include: epel-repo.yml
+- include: epel-repo.yml
 
 - name: "Disable EPEL repo for security purposes"
   replace: dest=/etc/yum.repos.d/epel.repo regexp='^(enabled=1)$' replace='enabled=0' backup=yes
