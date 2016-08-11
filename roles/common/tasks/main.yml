@@ -12,10 +12,6 @@
       alias cp='cp -i'
       alias mv='mv -i'
 
-- name: "Add {{ user }} user !requiretty in /etc/sudoers"
-  lineinfile: dest=/etc/sudoers state=present insertafter="^Defaults    requiretty" line="Defaults:{{ user }} !requiretty" validate='visudo -cf %s'
-  when: ansible_distribution == 'CentOS'
-
 - include: epel-repo.yml
 
 - name: "Disable EPEL repo for security purposes"
