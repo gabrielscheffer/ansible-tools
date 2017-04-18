@@ -12,5 +12,4 @@
   connection: ssh
   roles:
     - common
-    - gce-stackdriver-agent
     - docker-config

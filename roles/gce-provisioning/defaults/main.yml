@@ -18,4 +18,4 @@ tags: ansible-generated
 #persistentdisk
 # disk_type: pd-ssd
 disk_mode: READ_WRITE
-size_gb: 100
+size_gb: 40

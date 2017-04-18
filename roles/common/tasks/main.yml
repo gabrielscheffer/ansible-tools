@@ -12,14 +12,12 @@
       alias cp='cp -i'
       alias mv='mv -i'
 
-- include: epel-repo.yml
-
-- name: "Disable EPEL repo for security purposes"
-  replace: dest=/etc/yum.repos.d/epel.repo regexp='^(enabled=1)$' replace='enabled=0' backup=yes
-
 - name: "Installing essential packages"
   yum: name={{ item }} state=present enablerepo=epel update_cache=yes
   with_items: "{{ packages }}"
+
+- name: "Disable EPEL repo for security purposes"
+  command: "yum-config-manager --disable epel"
 
 - name: "Disable Extras repo for security purposes"
   command: "yum-config-manager --disable extras"

@@ -1,0 +1,6 @@
+---
+
+- name: Configure NewRelic Agent
+  hosts: all
+  roles:
+    - newrelic-agent
