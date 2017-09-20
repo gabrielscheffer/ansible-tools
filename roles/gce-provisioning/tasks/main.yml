@@ -11,6 +11,7 @@
      service_account_email: "{{ service_account_email }}"
      zone: "{{ zone }}"
      persistent_boot_disk: "{{ persistent_boot_disk }}"
+     disk_size: "{{ boot_size_gb }}"
      disk_auto_delete: "{{ disk_auto_delete }}"
      service_account_permissions: "{{ service_account_permissions }}"
      tags: "{{ tags }}"
