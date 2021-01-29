@@ -3,7 +3,15 @@
 #- include: satellite-bootstrap.yml
 #  when: cloud_account is not defined and ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version']|int > 6
 
-- include: epel-repo.yml
+- name: Register system and add subscription
+  redhat_subscription:
+    username: "{{ rhsm_username }}"
+    password: "{{ rhsm_password }}"
+    state: present
+    auto_attach: yes
+  when: ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version']|int > 6
+
+- import_tasks: epel-repo.yml
 
 - name: "Installing mandadory packages"
   tags: common
@@ -21,6 +29,30 @@
     update_cache: yes
     enablerepo: "{{ subscription_enablerepo }}"
 
+- name: "Installing essential packages distrib version < 8"
+  tags: common
+  yum: 
+    name:
+      - NetworkManager-glib
+      - libsemanage-python
+      - policycoreutils-python
+      - yum-plugin-security
+    state: present
+    update_cache: yes
+    enablerepo: "{{ subscription_enablerepo }}"
+  when: ansible_facts['distribution_major_version']|int < 8
+
+- name: "Installing essential packages distrib version = 8"
+  tags: common
+  yum: 
+    name:
+      - NetworkManager-libnm
+      - policycoreutils-python-utils
+    state: present
+    update_cache: yes
+    enablerepo: "{{ subscription_enablerepo }}"
+  when: ansible_facts['distribution_major_version']|int == 8
+
 - name: "Update tzdata to latest"
   tags: common
   yum: 
@@ -35,6 +67,7 @@
 - name: "Disable Extras repo for security purposes"
   tags: common
   command: "yum-config-manager --disable extras"
+  when: ansible_facts['distribution_major_version']|int < 8
 
 - name: "Clean orphan and unused packages from YUM"
   tags: common

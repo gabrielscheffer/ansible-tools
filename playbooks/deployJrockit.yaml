@@ -2,7 +2,7 @@
 - hosts: java_br,java_wop_br
   vars_prompt:
     - name: server_instance
-      prompt: "Instance Name (e.g. \"jboss6-jbr\")"
+      prompt: "Instance Name (e.g. \"jboss6-node\")"
       private: no
   vars:
     - jrockit_path: /usr/java/jrockit-jdk1.6.0_45-R28.2.7-4.1.0

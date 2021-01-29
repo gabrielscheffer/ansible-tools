@@ -1,0 +1,27 @@
+---
+- name: Create VMs
+  hosts: all
+  vars:
+    libvirt_vms:
+      - name: 'services'
+        state: present
+        memory_mb: 4096
+        vcpus: 2
+        enable_vnc: true
+        volumes:
+          - name: 'services.qcow2'
+            device: 'disk'
+            format: 'qcow2'
+            capacity: '50GB'
+            pool: 'home-pool'
+          # - name: 'debian-10.2.0-amd64-netinst.iso'
+          #   type: 'file'
+          #   file_path: 
+          #   device: 'cdrom'
+          #   format: 'raw'
+          #   target: 'vdb'  # first device on ide bus
+        interfaces:
+          - network: 'lab-ocp4'
+        start: true
+  roles:
+    - role: stackhpc.libvirt-vm

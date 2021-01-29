@@ -10,7 +10,7 @@
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
 
-- include: timezone.yml
+- include_tasks: timezone.yml
 
 - name: "Add Alias rm cp mv with -i in {{ bashrc_file }}"
   tags: common
@@ -24,13 +24,17 @@
       alias mv='mv -i'
       alias ll='ls -ahlF --color=auto'
 
-- include: redhat-custom.yml
+- include_tasks: redhat-custom.yml
   when: ansible_facts['os_family'] == "RedHat"
 
-- include: debian-custom.yml
+- include_tasks: debian-custom.yml
   when: ansible_facts['os_family'] == "Debian"
 
-- include: network.yml
+- include_tasks: network.yml
   when: fresh_install is defined
 
-- include: ntpconf.yml
+# - include_tasks: ntpconf.yml
+
+- include_tasks: ssh_pub.yml
+
+...

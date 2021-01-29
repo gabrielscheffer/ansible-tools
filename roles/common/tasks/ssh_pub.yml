@@ -1,0 +1,9 @@
+---
+
+- name: "Copy current {{ lookup('env', 'USER') }} pub key to remote host"
+  authorized_key:
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    state: present
+    user: "{{ ansible_user }}"
+
+...

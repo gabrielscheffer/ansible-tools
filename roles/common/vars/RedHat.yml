@@ -4,8 +4,8 @@ bashrc_file: /etc/bashrc
 ntp_service_name: ntpd
 netmanager_service_name: NetworkManager
 subscription_enablerepo: epel,rhel-*-server-rpms,rhel-*-optional-rpms,rhel-*-extras-rpms,rhel-*-server-rh-common-rpms,rhel-server-rhscl-*-rpms
-rhel_subs_user: rh_portal_account
-rhel_subs_password: password | encrypt using vault
+rhsm_username: rh_portal_account
+rhsm_password: password | encrypt using vault
 
 satellite_orgname: "Example Organization"
 # satellite_rpm: "https://{{ satellite_hostname }}/pub/katello-ca-consumer-latest.noarch.rpm"
@@ -22,17 +22,13 @@ packages:
   - ncdu
   - net-tools
   - NetworkManager
-  - NetworkManager-glib
-  - ntp
   - open-vm-tools
-  - policycoreutils-python
   - systemd
   - sos
   - tzdata
   - tzdata-java
   - vim
   - yum-utils
-  - yum-plugin-security
   - zlib
 epel_repo_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
 epel_repo_gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"

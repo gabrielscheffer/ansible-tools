@@ -1,8 +1,5 @@
 ---
 - hosts: all
   roles:
-   - { role: security, become: yes }
-  vars:
-    - user_shell: '/bin/bash'
-
+   - { role: geerlingguy.security, become: yes }
 ...

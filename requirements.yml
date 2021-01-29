@@ -2,11 +2,15 @@
 #- src: datadog.datadog
 #  name: datadog.datadog
 - src: grog.user
-  name: user
+  name: grog.user
 # https://galaxy.ansible.com/geerlingguy/security
 - src: geerlingguy.security
-  name: security
+  name: geerlingguy.security
 # https://galaxy.ansible.com/geerlingguy/nginx
 - src: geerlingguy.nginx
-  name: nginx
+  name: geerlingguy.nginx
 # https://galaxy.ansible.com/geerlingguy/certbot
+- src: stackhpc.libvirt-host
+  name: stackhpc.libvirt-host
+- src: stackhpc.libvirt-vm
+  name: stackhpc.libvirt-vm

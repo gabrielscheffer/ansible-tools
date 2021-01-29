@@ -1,11 +1,13 @@
 ---
 
 - name: Making sure ntp is installed
-  when: ansible_facts['os_family'] == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int < 8
   yum:
     name: ntp
     state: present
   tags: common-ntpconf
+
+# TODO: chrony for > 7
 
 - name: Making sure ntp is installed
   when: ansible_facts['os_family'] == "Debian"
@@ -13,6 +15,8 @@
     name: ntp
     state: present
   tags: common-ntpconf
+
+# TODO: Configure only after installation successful
 
 - name: Configuring ntp.conf via template ntp.conf.j2
   template:
@@ -28,3 +32,7 @@
     state: started
     enabled: yes
   tags: common-ntpconf
+
+#############################################################
+
+...

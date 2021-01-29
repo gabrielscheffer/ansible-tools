@@ -1,0 +1,38 @@
+---
+- name: Ensure that Libvirt is configured
+  hosts: all
+  vars:
+    libvirt_host_pools:
+      - name: home-pool
+        type: dir
+        path: /home/libvirt/images
+        mode: 755
+    libvirt_host_networks:
+      - name: lab-ocp4
+        mode: nat
+        bridge: lab-ocp4
+        domain: gablab.com
+        ip: 192.168.133.1
+        netmask: 255.255.255.0
+  roles:
+    - stackhpc.libvirt-host
+  post_tasks:
+    - name: "RHEL 8 module virt package"
+      command: "yum module install -y virt"
+      register: result
+      changed_when: "result.rc != 0"
+
+    - name: "Install virt-install virt-viewer cockpit-machines libguestfs-tools"
+      yum:
+        name:
+          - virt-install
+          - virt-viewer
+          - cockpit-machines
+          - libguestfs-tools
+        state: present
+
+    - name: "Ensure libvirtd is started and enabled"
+      service:
+        name: libvirtd
+        state: started
+        enabled: yes

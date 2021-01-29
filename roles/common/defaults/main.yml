@@ -13,4 +13,4 @@ dns_search_domain:
   - domain.example.com
 
 ntp_servers:
-  - "{{ EXAMPLE_server }} prefer iburst"
+  - "pool.ntp.org prefer iburst"
