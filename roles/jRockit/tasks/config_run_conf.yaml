@@ -1,0 +1,24 @@
+---
+- name: "Create backup dir"
+  file:
+    path: "{{ instance_path }}/bin/backup"
+    state: directory
+
+- name: Backup file
+  copy:
+    src: "{{ run_conf }}"
+    dest: "{{ instance_path }}/bin/backup/run.conf.{{ date }}"
+    remote_src: yes
+
+- name: Change jdk to jRockit
+  lineinfile:
+    path: "{{ run_conf }}"
+    regexp: '^JAVA_HOME=.*'
+    line: JAVA_HOME="{{ jrockit_path }}"
+
+- name: Set jRockit JAVA_OPTS for JBoss
+  lineinfile:
+    path: "{{ run_conf }}"
+    regexp: "JAVA_OPTS=.*-Xmx.*"
+    line: "JAVA_OPTS=\"-server -Xms2048m -Xmx2048m -Xns1512m -XXaggressive -XXlazyunlocking  -XXnoSystemGC -Dsun.rmi.dgc.client.gcInterval=1800000 -Dsun.rmi.dgc.server.gcInterval=1800000 -XX:+UseStringCache -Dorg.jboss.resolver.warning=true -Djboss.vfs.cache=org.jboss.virtual.plugins.cache.IterableTimedVFSCache -Djboss.vfs.cache.TimedPolicyCaching.lifetime=1440 -Djava.awt.headless=true\""
+...

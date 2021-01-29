@@ -1,0 +1,7 @@
+---
+- name: Copy Application folders to Deployments folder
+  shell: "rsync -ar {{ old_instance_path }}/standalone/deployments/ --exclude=*.deployed --exclude=*.undeployed --exclude=*.failed {{ instance_path }}/standalone/deployments/"
+
+- name: Deploy Applications "{{ server_instance }}"
+  shell: find "{{ instance_path }}"/standalone/deployments/ -maxdepth 1 -type d -exec touch {}.dodeploy \;
+...

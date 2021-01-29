@@ -1,0 +1,10 @@
+- name: Create instance folder on /home/workdir
+  file:
+    path: "/home/workdir/{{ server_instance }}"
+    state: directory
+
+- name: Set startup.sh by template
+  template:
+    src: startup.sh.j2
+    dest: "{{ instance_path }}/bin/startup.sh"
+    mode: +x

@@ -1,0 +1,24 @@
+---
+- name: "Create backup dir"
+  file:
+    path: "{{ instance_path }}/bin/backup"
+    state: directory
+
+- name: Backup file
+  copy:
+    src: "{{ catalina_sh }}"
+    dest: "{{ instance_path }}/bin/backup/catalina.sh.old.{{ date }}"
+    remote_src: yes
+
+- name: Change jdk to jRockit
+  lineinfile:
+    path: "{{ catalina_sh }}"
+    regexp: '^JAVA_HOME=.*'
+    line: JAVA_HOME="{{ jrockit_path }}"
+
+- name: Set jRockit JAVA_OPTS for Tomcat
+  lineinfile:
+    path: "{{ catalina_sh }}"
+    regexp: "JAVA_OPTS=.*-Xmx.*"
+    line: "JAVA_OPTS=\"-server -Xms2048m -Xmx2048m -Xns1024m -XXaggressive -XXlazyunlocking -XXnoSystemGC -Dsun.rmi.dgc.client.gcInterval=1800000 -Dsun.rmi.dgc.server.gcInterval=1800000 -XX:+UseStringCache\""
+...

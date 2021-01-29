@@ -1,0 +1,4 @@
+---
+
+ossec_release_url_x86_64: "https://updates.atomicorp.com/channels/atomic/redhat/{{ ansible_distribution_major_version }}/x86_64/RPMS/{{ ossec_server_atomic_release }}.el{{ ansible_distribution_major_version }}.art.noarch.rpm"
+ossec_service_name: ossec-hids

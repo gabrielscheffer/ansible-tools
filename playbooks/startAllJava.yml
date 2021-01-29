@@ -1,0 +1,31 @@
+---
+# TODO Contar quantas JVM foram iniciadas count()
+- hosts: java
+  tasks:
+  - name: "Get All Java Process Running"
+    shell: "ps aux |grep java"
+    register: result
+
+  - name: "List All Java Process Running"
+    debug: 
+     var: result.stdout
+
+  - name: "Start All Java Web Servers"
+    shell: "/opt/scripts/startallserver.sh"
+    register: result
+
+  - name: "Stdout of StartServer.sh"
+    debug: 
+     var: result.stdout
+
+  - name: "Wait 3 seconds to retrieve new process list"
+    wait_for:
+     timeout: 3
+
+  - name: "Get All Java Process Running"
+    shell: "ps aux |grep java"
+    register: result
+
+  - name: "List All Java Process Running"
+    debug: 
+     var: result.stdout

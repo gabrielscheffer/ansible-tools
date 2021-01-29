@@ -1,6 +1,0 @@
----
-
-- name: Custom configuration for Openshift Origin
-  hosts: "{{ variable_host | default('masters') }}"
-  roles:
-    - openshift-custom

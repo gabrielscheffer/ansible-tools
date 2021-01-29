@@ -1,0 +1,62 @@
+---
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- include: redhat-custom.yml
+  when: ansible_facts['os_family'] == "RedHat"
+
+- include: debian-custom.yml
+  when: ansible_facts['os_family'] == "Debian"
+
+# Validate the sudoers file before saving
+- name: Configure zabbix user in sudoers for recovery scripts
+  tags: zabbix-agent
+  lineinfile:
+    path: /etc/sudoers
+    insertafter: 'root\s+ALL=.*'
+    state: present
+    line: 'zabbix  ALL=NOPASSWD: {{ zabbix_recovery_scripts }}'
+    validate: '/usr/sbin/visudo -cf %s'
+  when: zabbix_recovery_scripts | length != 0
+
+- name: Remove zabbix user in sudoers
+  tags: zabbix-agent
+  lineinfile:
+    path: /etc/sudoers
+    state: absent
+    regexp: 'zabbix\s+ALL=NOPASSWD.*'
+    validate: '/usr/sbin/visudo -cf %s'
+  when: zabbix_recovery_scripts | length == 0
+
+- name: "Copying cifs.conf to {{ zabbix_conf_path }}"
+  tags: zabbix-agent
+  copy:
+    src: cifs.conf
+    force: no
+    dest: "{{ zabbix_conf_path }}/cifs.conf"
+
+- name: "Copying nfs.conf to {{ zabbix_conf_path }}"
+  tags: zabbix-agent
+  copy:
+    src: nfs.conf
+    force: no
+    dest: "{{ zabbix_conf_path }}/nfs.conf"
+
+- name: Configuring zabbix_agentd.conf via template zabbix_agentd.conf.j2
+  tags: zabbix-agent
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+  notify:
+  - restart zabbix-agent
+
+- name: Making sure zabbix-agent is running and enabled
+  tags: zabbix-agent
+  service:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+...

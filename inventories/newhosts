@@ -1,0 +1,6 @@
+[all:vars]
+ansible_connection=ssh
+fresh_install=yes
+
+[all]
+# NOMEDOHOST

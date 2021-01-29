@@ -1,0 +1,43 @@
+---
+
+##pre_validation
+- name: Prepare package and validation for Web Deploy
+  include: predeploy.yaml
+
+- name: Check if deploy hierarchy exists in remote host
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items: 
+    - "{{ deploy_folder }}/dodeploy"
+    - "{{ deploy_failed_folder }}"
+
+- name: "Create a symbolic link on /root/deploy to {{ ansible_env.HOME }}/deploy"
+  become: yes
+  file:
+    src: "{{ ansible_env.HOME }}/deploy"
+    dest: /root/deploy
+    state: link
+
+# TODO: Mount e source FTP
+- name: "Copying package {{ packagefile }}.tar.gz from localhost to {{ deploy_folder }}/dodeploy on remote host"
+  copy:
+    src: "{{ deploy_folder }}/{{ packagefile }}.tar.gz"
+    force: yes
+    dest: "{{ deploy_folder }}/dodeploy"
+  register: copy_path
+
+- name: Deploy on web server
+  include: webdeploy.yaml
+
+- name: "Cleanup remote dodeploy {{ packagefile }}.tar.gz"
+  file:
+    path: "{{ copy_path.dest }}"
+    state: absent
+
+- name: "-localhost- Cleanup deploy {{ packagefile }}.tar.gz"
+  delegate_to: localhost
+  file:
+    path: "{{ deploy_folder }}/{{ packagefile }}.tar.gz"
+    state: absent
+...

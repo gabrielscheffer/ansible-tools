@@ -1,5 +1,0 @@
----
-
-- hosts: "{{ variable_host | default('masters') }}"
-  roles:
-    - openshift-router

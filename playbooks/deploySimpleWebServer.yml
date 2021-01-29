@@ -1,0 +1,27 @@
+---
+- hosts: webserver
+  become: yes
+  tasks:
+    - name: Setup facts
+      setup:
+        gather_subset:
+          - 'hardware'
+    - include_role:
+        name: nginx
+  vars:
+    nginx_server_tokens: "off"
+    nginx_remove_default_vhost: true
+    nginx_conf_template: "{{ playbook_dir }}/templates/nginx.conf.j2"
+    nginx_vhosts:
+      - listen: "8080"
+        state: "present"
+        template: "{{ nginx_vhost_template }}"
+        server_name: "static.example.com"
+        # filename: "static.example.com.conf"
+        root: "/var/www/static.example.com"
+        index: "index.html index.htm"
+        # error_page: ""
+        # access_log: "off"
+        # error_log: "off"
+
+...

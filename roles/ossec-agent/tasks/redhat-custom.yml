@@ -1,0 +1,27 @@
+---
+# Tasks specific for RedHat systems
+
+- name: Import default official Ossec GPG key.
+  tags: ossec-agent
+  rpm_key:
+    key: "{{ ossec_release_key }}"
+    state: present
+
+- name: Install default official Ossec Release Repo
+  tags: ossec-agent
+  yum:
+    name: "{{ ossec_release_url_x86_64 }}"
+    state: present
+  retries: 3
+  delay: 10
+
+- name: Install the latest version of ossec agent from official release repo
+  tags: ossec-agent
+  yum:
+    name: "{{ ossec_agent_package_name }}"
+    enablerepo: atomic
+    state: present
+
+- name: Disable Atomic repo for security purposes
+  tags: ossec-agent
+  command: "yum-config-manager --disable atomic"

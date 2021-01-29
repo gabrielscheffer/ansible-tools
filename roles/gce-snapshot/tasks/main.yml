@@ -1,8 +1,0 @@
----
-
-- name: Sync I/O buffer to Disks
-  command: sync
-
-- name: "Making snapshot on gcloud of disks date={{ ansible_date_time.date }}"
-  command: "/usr/local/bin/gcloud compute disks snapshot {{ item }} --snapshot-names ss-{{ item }}-{{ ansible_date_time.date }} --zone {{ zone }}"
-  with_items: "{{ backup_disks }}"

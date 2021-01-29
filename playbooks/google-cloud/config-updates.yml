@@ -1,6 +1,0 @@
----
-
-- name: Configure automatic updates
-  hosts: all
-  roles:
-    - yum-cron

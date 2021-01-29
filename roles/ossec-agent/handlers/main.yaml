@@ -1,0 +1,10 @@
+---
+
+- name: restart ossec-agent
+  ignore_errors: yes
+  service:
+    name: "{{ ossec_service_name }}"
+    state: restarted
+    enabled: yes
+
+...

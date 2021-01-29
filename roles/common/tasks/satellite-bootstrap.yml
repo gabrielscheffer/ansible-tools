@@ -1,0 +1,65 @@
+---
+
+# # Unregister Online
+# - name: "Subscription Manager Clean"
+#   tags: common
+#   ignore_errors: yes
+#   shell: "subscription-manager unregister || subscription-manager clean"
+
+- name: Satellite check if already registered
+  stat:
+    path: /usr/bin/katello-rhsm-consumer
+  register: installation
+
+- name: "Download package bootstrap.py from Satellite to /root/ on remote host"
+  tags: common
+  when: installation.stat.exists == False or satellite_forceregister is defined
+  get_url:
+    url: "http://{{ satellite_hostname }}/pub/bootstrap.py"
+    force: yes
+    mode: 755
+    dest: "/root/bootstrap.py"
+
+- name: "Register RHEL on Satellite using Puppet bootstrap.py"
+  tags: common
+  when: satellite_forceregister is not defined and installation.stat.exists == False
+  shell: >
+    /root/bootstrap.py --verbose --server={{ satellite_hostname }}
+    --login={{ satellite_ansible_user }} --password={{ satellite_ansible_pass }}
+    --organization="{{ satellite_orgname }}"
+    --hostgroup="{{ sattelite_hostgroup }}"
+    --activationkey={{ satellite_activationkey }}
+    --enablerepos="{{ subscription_enablerepo }},rhel-*-server-satellite-tools-6.7-rpms"
+    --rex --rex-user=ansible
+    exit 0
+  args:
+    executable: /bin/bash
+
+- name: "Forcing Register RHEL on Satellite using Puppet bootstrap.py"
+  tags: common
+  when: satellite_forceregister is defined
+  shell: >
+    /root/bootstrap.py --verbose --force --server={{ satellite_hostname }}
+    --login={{ satellite_ansible_user }} --password={{ satellite_ansible_pass }}
+    --organization="{{ satellite_orgname }}"
+    --hostgroup="{{ sattelite_hostgroup }}"
+    --activationkey={{ satellite_activationkey }}
+    --enablerepos="{{ subscription_enablerepo }},rhel-*-server-satellite-tools-6.7-rpms"
+    --rex --rex-user=ansible
+    exit 0
+  args:
+    executable: /bin/bash
+
+- name: "Installing Satellite essential packages"
+  tags: common
+  yum: 
+    name: "katello-host-tools,katello-host-tools-tracer,virt-who"
+    state: latest
+    update_cache: yes
+    enablerepo: "rhel-*-server-rpms,rhel-*-server-satellite-tools-6.7-rpms"
+
+- name: "Remove /root/bootstrap.py on remote host"
+  tags: common
+  file:
+   path: /root/bootstrap.py
+   state: absent

@@ -1,0 +1,7 @@
+---
+#Change Log name and export variables
+- name: Set standalone.sh by template
+  template:
+    src: standalone.sh.j2
+    dest: "{{ instance_path }}/bin/standalone.sh"
+...

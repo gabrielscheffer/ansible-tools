@@ -1,0 +1,27 @@
+---
+- name: Create a symbolic link to log directory
+  file:
+    remote_src: yes
+    src: /var/log/web/
+    dest: "{{ instance_path }}/standalone/log"
+    force: yes
+    state: link
+
+- name: Create symbolic links to group access properties
+  file:
+    remote_src: yes
+    src: /opt/wildfly-mgmt/mgmt-groups.properties
+    dest: "{{ instance_path }}/standalone/configuration/mgmt-groups.properties"
+    force: yes
+    state: link
+  
+
+- name: Create symbolic links to user access properties
+  file:
+    remote_src: yes
+    src: /opt/wildfly-mgmt/mgmt-users.properties
+    dest: "{{ instance_path }}/standalone/configuration/mgmt-users.properties"
+    force: yes
+    state: link
+
+...

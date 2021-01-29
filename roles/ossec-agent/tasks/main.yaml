@@ -1,0 +1,102 @@
+---
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- include: redhat-custom.yml
+  when: ansible_facts['os_family'] == "RedHat"
+
+- include: debian-custom.yml
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Configuring ossec.conf via template ossec.conf.j2
+  tags: ossec-agent-config
+  template:
+    src: ossec.conf.j2
+    dest: /var/ossec/etc/ossec.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart ossec-agent
+
+- name: Configuring ossec-agent.conf via template ossec-agent.conf.j2
+  tags: ossec-agent-config
+  template:
+    src: ossec-agent.conf.j2
+    dest: /var/ossec/etc/ossec-agent.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart ossec-agent
+
+- name: Force register ossec-client - removing client.keys
+  tags: ossec-agent-config
+  file:
+    dest: /var/ossec/etc/client.keys
+    state: absent
+  when: force_ossec is defined
+
+- name: Checking if client.keys exists
+  tags: ossec-agent-config
+  stat:
+    path: /var/ossec/etc/client.keys
+  register: check_keys
+
+- name: Checking if client.keys exists on remote ossec-server
+  tags: ossec-agent-config
+  stat:
+    path: /var/ossec/etc/client.keys
+  delegate_to: "{{ ossec_server_name }}"
+  register: check_server_keys
+
+- name: "Starting auth daemon on remote server {{ ossec_server_name }}"
+  tags: ossec-agent-config
+  shell: '/var/ossec/bin/ossec-authd -p 1515 -i 2>&1 > /var/ossec/logs/ossec-authd.log &'
+  when: check_keys.stat.exists == False and ossec_server_name|default("") != ""
+  delegate_to: "{{ ossec_server_name }}"
+  run_once: true
+
+- name: Register ossec-client
+  tags: ossec-agent-config
+  shell: /var/ossec/bin/agent-auth -A {{ hostname|upper }} -m {{ ossec_server|default(ossec_server_name) }} -p 1515
+  args:
+    creates: /var/ossec/etc/client.keys
+  notify: restart ossec-agent
+
+- name: Set permissions on client.keys file
+  tags: ossec-agent-config
+  file:
+    dest: /var/ossec/etc/client.keys
+    mode: 0640
+
+- name: "Kill the auth-daemon on remote server {{ ossec_server_name }}"
+  tags: ossec-agent-config
+  shell: /usr/bin/pkill -f /var/ossec/bin/ossec-authd
+  delegate_to: "{{ ossec_server_name }}"
+  when: check_keys.stat.exists == False and ossec_server_name|default("") != ""
+  run_once: true
+
+- name: Restart ossec-remoted on server. If this is the first agent added it will not be running.
+  tags: ossec-agent-config
+  shell: /var/ossec/bin/ossec-control restart
+  delegate_to: "{{ ossec_server_name }}"
+  when: check_server_keys.stat.exists == False and ossec_server_name|default("") != ""
+  run_once: true
+
+- name: "/etc/resolv.conf symlink /var/ossec/etc/resolv.conf"
+  tags: ossec-agent-config
+  file:
+    src: "/etc/resolv.conf"
+    force: yes
+    path: /var/ossec/etc/resolv.conf
+    state: link
+
+- name: Making sure ossec-agent is running and enabled
+  tags: ossec-agent
+  service:
+    name: "{{ ossec_service_name }}"
+    state: started
+    enabled: yes
+...

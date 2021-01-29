@@ -1,0 +1,12 @@
+# from galaxy
+#- src: datadog.datadog
+#  name: datadog.datadog
+- src: grog.user
+  name: user
+# https://galaxy.ansible.com/geerlingguy/security
+- src: geerlingguy.security
+  name: security
+# https://galaxy.ansible.com/geerlingguy/nginx
+- src: geerlingguy.nginx
+  name: nginx
+# https://galaxy.ansible.com/geerlingguy/certbot

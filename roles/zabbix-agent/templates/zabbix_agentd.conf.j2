@@ -1,0 +1,9 @@
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize={{ zabbix_logfilesize }}
+Server={{ zabbix_server }}
+ServerActive={{ zabbix_server }}
+Hostname={{ hostname|upper }}
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+EnableRemoteCommands={{ zabbix_remote_command | int }}
+LogRemoteCommands={{ zabbix_remote_command | int }}

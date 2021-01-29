@@ -1,7 +1,0 @@
----
-
-- name: Execute snapshot on gce instances
-  hosts: all
-  serial: 1
-  roles:
-    - gce-snapshot

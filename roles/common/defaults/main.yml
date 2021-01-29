@@ -1,23 +1,16 @@
 ---
-locale: pt_BR.utf8
+hostname: "{{ inventory_hostname }}"
+
+conn_name: ens192
+locale: en_US.utf8
 timezone: America/Sao_Paulo
-packages:
-  - ansible
-  - bash-completion
-  - bind-utils
-  - bridge-utils
-  - certbot
-  - docker
-  - git
-  - htop
-  - iotop
-  - iptables-services
-  - net-tools
-  - pyOpenSSL
-  - python-libcloud
-  - python-passlib
-  - vim
-  - yum-utils
-  - wget
-epel_repo_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
-epel_repo_gpg_key_url: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+
+dns_servers: 
+# list
+  - "{{ EXAMPLE_server }}"
+  
+dns_search_domain: 
+  - domain.example.com
+
+ntp_servers:
+  - "{{ EXAMPLE_server }} prefer iburst"

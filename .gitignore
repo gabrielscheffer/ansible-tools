@@ -1,1 +1,4 @@
-**/*.retry
+galaxy
+tmp
+*.zip
+*.tar.gz

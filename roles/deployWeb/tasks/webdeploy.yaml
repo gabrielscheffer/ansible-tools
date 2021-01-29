@@ -1,0 +1,19 @@
+---
+- name: "Unpackage {{ packagefile }}.tar.gz on {{ deploy_folder }}/dodeploy"
+  unarchive:
+    remote_src: yes
+    src: "{{ copy_path.dest }}"
+    dest: "{{ deploy_folder }}/dodeploy"    
+
+- name: "Register all folder in variable appNameList.stdout_lines"
+  register: appNameList
+  shell: "ls {{ deploy_folder }}/dodeploy"
+
+- debug:
+   var: appNameList.stdout_lines
+
+- name: Deploy on Wildfly
+  include: webdeploy-wildfly.yaml
+  when: wildfly is defined
+
+...

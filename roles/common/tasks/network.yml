@@ -1,0 +1,84 @@
+---
+- name: "Disable IPv6 on All interfaces via sysctl.conf"
+  tags: common-network
+  sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: "Disable IPv6 by default via sysctl.conf"
+  tags: common-network
+  sysctl:
+    name: net.ipv6.conf.default.disable_ipv6
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Making sure firewalld is stopped and disabled
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  tags: common-firewall
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 7
+
+- name: Disable service firewalld and ensure it is masked
+  systemd:
+    name: firewalld
+    enabled: no
+    masked: yes
+  tags: common-firewall
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 7
+
+- name: Making sure iptables is stopped and disabled
+  service:
+    name: iptables
+    state: stopped
+    enabled: no
+  tags: common-firewall
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 6
+
+- name: "Making sure {{ netmanager_service_name }} is started and enabled"
+  service:
+    name: "{{ netmanager_service_name }}"
+    state: started
+    enabled: yes
+  tags: common-network
+
+- name: "Setting hostname according to inventory"
+  tags: common-network
+  hostname:
+    name: "{{ hostname|upper }}"
+
+- name: "Fix /etc/hosts removing the old hostname"
+  tags: common-network
+  lineinfile:
+    state: present
+    dest: /etc/hosts
+    line: "{{ ansible_default_ipv4.address }} {{ hostname|upper }}.{{ default_dns_suffix }} {{ hostname|upper }}"
+    regexp: "^{{ ansible_default_ipv4.address }}"
+
+# TODO: Fallback to file config
+- name: Add two IPv4 DNS server addresses "{{ dns_servers }}"
+  tags: common-network
+  ignore_errors: yes
+  nmcli:
+    conn_name: "{{ conn_name }}"
+    type: ethernet  
+    dns4: "{{ dns_servers }}"
+    state: present
+
+# TODO: Fallback to file config
+- name: Add IPv4 DNS Search Domain "{{ dns_search_domain }}"
+  tags: common-network
+  ignore_errors: yes
+  nmcli:
+    conn_name: "{{ conn_name }}"
+    type: ethernet  
+    dns4_search: "{{ dns_search_domain }}"
+    state: present
+  notify:
+  - restart NetworkManager

@@ -1,0 +1,24 @@
+---
+- include_vars: "{{ default_dns_suffix }}.yml"
+
+# - name: Add Linux Computers List to Active Directory OU using a Windows host
+#   debug: 
+#     msg: "{{ item.name }}.{{ default_dns_suffix }} {{ item.ou }} {{ item.enabled }}"
+#   with_items: "{{ computers_list }}"
+
+- name: Add Linux Computers List to Active Directory OU using a Windows host
+  run_once: true
+  win_domain_computer:
+    domain_server: "{{ default_domain_server }}"
+    domain_username: "{{ default_domain_username }}"
+    domain_password: "{{ default_domain_password }}"
+    name: "{{ item.name }}"
+    sam_account_name: "{{ item.name }}$"
+    dns_hostname: "{{ item.name }}.{{ default_dns_suffix }}"
+    ou: "{{ item.ou }}"
+    description: "{{ item.description }}"
+    enabled: "{{ item.enabled }}"
+    state: "{{ item.state }}"
+  with_items: "{{ computers_list }}"
+
+...

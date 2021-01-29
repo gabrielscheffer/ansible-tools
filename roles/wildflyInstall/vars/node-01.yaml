@@ -1,0 +1,8 @@
+---
+country: BR
+server_offset: 600
+heap_min: 4g
+heap_max: 4g
+metaspace: 1g
+
+...

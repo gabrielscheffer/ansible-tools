@@ -1,10 +1,13 @@
 ---
 
 - name: Enable SELINUX=enforcing and SELINUXTYPE=targeted
+  tags: common-selinux
   selinux: policy=targeted state=enforcing
+# Google Cloud Platform
+# - name: Enable SELinux persistent virt_use_nfs
+#   tags: common-selinux
+#   seboolean: name=virt_use_nfs state=yes persistent=yes
 
-- name: Enable SELinux persistent virt_use_nfs
-  seboolean: name=virt_use_nfs state=yes persistent=yes
-
-- name: Enable SELinux persistent virt_sandbox_use_nfs
-  seboolean: name=virt_sandbox_use_nfs state=yes persistent=yes
+# - name: Enable SELinux persistent virt_sandbox_use_nfs
+#   tags: common-selinux
+#   seboolean: name=virt_sandbox_use_nfs state=yes persistent=yes

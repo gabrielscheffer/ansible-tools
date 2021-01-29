@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: yes
+  #  vars:
+  #    fresh_install: yes
+  roles:
+   - common
+...

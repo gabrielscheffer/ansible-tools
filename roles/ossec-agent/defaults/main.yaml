@@ -1,0 +1,10 @@
+---
+# defaults file for ossec-agent
+hostname: "{{ inventory_hostname }}"
+ossec_server: 192.168.1.10
+ossec_server_name: ALIENVAULT_EXAMPLE
+ossec_agent_package_name: ossec-hids-agent
+# https://www.ossec.net/downloads/
+ossec_release_key: https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt
+ossec_server_atomic_release: atomic-release-1.0-21
+...

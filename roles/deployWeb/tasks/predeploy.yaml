@@ -1,0 +1,50 @@
+---
+
+- name: -localhost- Clean tmp folder if exists
+  delegate_to: localhost
+  run_once: true
+  shell: rm -rf /tmp/packagetemp*
+  args:
+    executable: /bin/bash
+
+- name: -localhost- Check if deploy hierarchy exists in localhost
+  delegate_to: localhost
+  run_once: true
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items: 
+    - "{{ deploy_folder }}"
+    - "{{ temp_folder }}"
+
+- name: -localhost- Unpackage {{ packagefile }}.zip to {{ temp_folder }}
+  delegate_to: localhost
+  run_once: true
+  unarchive:
+    src: "{{ deploy_folder }}/{{ packagefile }}.zip"
+    dest: "{{ temp_folder }}"
+    keep_newer: yes
+
+- name: -localhost- Prepare for Deploy Script
+  delegate_to: localhost
+  run_once: true
+  shell: |
+    find {{ temp_folder }} -type f -exec chmod 644 {} \;
+    find {{ temp_folder }} -type d -exec chmod 755 {} \;
+    find {{ temp_folder }} \( -name \*.css -o -name \*.xml -o -name \*.jrxml -o -name \*.file -o -name \*.html -o -name \*.mxml -o -name \*.js -o -name \*.properties \) -exec dos2unix {} \;
+    exit 0
+  args:
+    executable: /usr/bin/bash
+
+- name: -localhost- Package from {{ temp_folder }} into a new {{ packagefile }}.tar.gz 
+  delegate_to: localhost
+  run_once: true
+  shell: |
+    rm -f {{ deploy_folder }}/{{ packagefile }}.tar.gz
+    cd {{ temp_folder }}
+    tar -zcvf  {{ deploy_folder }}/{{ packagefile }}.tar.gz *
+    rm -rf {{ temp_folder }}
+    exit 0
+  args:
+    executable: /usr/bin/bash
+...

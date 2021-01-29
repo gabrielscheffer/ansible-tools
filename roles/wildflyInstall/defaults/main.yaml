@@ -1,0 +1,15 @@
+---
+drivers_folder: /opt/scripts/release/driver
+sqlserver: mssql-jdbc-7.4.1.jre8.jar
+wildfly_pkg: wildfly-18.0.1.Final.tar.gz
+old_instance_path: "/opt/{{ node_name }}"
+server_instance: node-01
+instance_path: "/opt/wf18-{{ server_instance }}"
+standalone_xml: "{{instance_path}}/standalone/configuration/standalone.xml"
+old_standalone_xml: "{{old_instance_path}}/standalone/configuration/standalone.xml"
+country: BR
+server_offset: 2
+heap_min: 1g
+heap_max: 1g
+metaspace: 512m
+...

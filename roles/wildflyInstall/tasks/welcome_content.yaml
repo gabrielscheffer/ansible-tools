@@ -1,0 +1,4 @@
+---
+- name: Copy welcome-content to same folder on new instance.
+  shell: "rsync -ar {{ old_instance_path }}/welcome-content {{ instance_path }}/ "
+...

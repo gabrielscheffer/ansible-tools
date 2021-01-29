@@ -1,0 +1,26 @@
+---
+
+conn_name: eth0
+bashrc_file: /etc/bash.bashrc
+ntp_service_name: ntp
+netmanager_service_name: network-manager
+
+packages:
+  - bash-completion
+  - dnsutils
+  - dbus
+  - htop
+  - iotop
+  - ncdu
+  - net-tools
+  - network-manager
+  - python-dbus
+  - libnm-glib-dev
+  - python-gi
+  - ntp
+  - open-vm-tools
+  - systemd
+  - tzdata
+  - tzdata-java
+  - vim
+  - zlib1g

@@ -1,0 +1,38 @@
+---
+- name: Create temp folder
+  file:
+    path: "/tmp/jrockit"
+    state: directory
+
+- name: Create install folder
+  file:
+    path: "{{ jrockit_path }}"
+    state: directory
+
+- name: Error handler
+  block: #The Ansible way of doing Try, Catch
+    - name: "Copy {{ jrockit_pkg }} file to server"
+      copy:
+        src: "{{ jrockit_pkg }}"
+        dest: "/tmp/{{ jrockit_pkg }}"
+
+    - name: Unpackage package
+      unarchive:
+        remote_src: true
+        src: "/tmp/{{ jrockit_pkg }}"
+        dest: "/tmp/jrockit"
+        extra_opts: 
+        - --strip-components=1
+
+    - name: Install jRockit
+      shell: "rsync -ar /tmp/jrockit/* {{ jrockit_path }}"
+  rescue: #The Ansible way of doing Try, Catch
+    - name: Remove jRockit folder due to an error
+      file:
+        path: "{{ jrockit_path }}"
+        state: absent
+
+- name: Clean temp
+  file:
+    path: "/tmp/jrockit"
+    state: absent

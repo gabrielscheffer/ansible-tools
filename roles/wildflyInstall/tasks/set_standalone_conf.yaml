@@ -1,0 +1,12 @@
+---
+- name: Set standalone.conf by template
+  template:
+    src: standalone.conf.j2
+    dest: "{{ instance_path }}/bin/standalone.conf"
+
+- name: Insert Datadog Agent
+  lineinfile: 
+    path: "{{ instance_path }}/bin/standalone.conf"
+    line: JAVA_OPTS="$JAVA_OPTS -Ddd.service.name={{ datadog_service_name }} -Ddd.jmxfetch.enabled=true -Ddd.logs.injection=true -Ddd.trace.analytics.enabled=true -javaagent:/root/dd-java-agent.jar"
+  when: datadog_service_name != ""
+...

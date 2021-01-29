@@ -1,0 +1,4 @@
+---
+
+ossec_release_url_x86_64: "deb https://updates.atomicorp.com/channels/atomic/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
+ossec_service_name: ossec

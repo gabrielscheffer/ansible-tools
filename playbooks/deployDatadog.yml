@@ -1,0 +1,21 @@
+---
+- hosts: all
+  roles:
+    - { role: datadog.datadog, become: yes, when: datadog_env is defined }
+  vars:
+    system_probe_config:
+      enabled: true
+    datadog_api_key: "LICENSE_KEY_HERE"
+    datadog_config:
+      tags:
+       - "env:{{ datadog_env }}"
+       - "datacenter:{{ datadog_datacenter }}"
+      log_level: WARN
+      apm_config:
+        enabled: true
+        max_traces_per_second: 10
+      cmd_port: 50001
+      logs_enabled: true
+# Dependencies
+# Python >2.7
+# Libs: selinux,urllib3,pyOpenSSL

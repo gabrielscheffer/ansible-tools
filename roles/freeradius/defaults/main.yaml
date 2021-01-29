@@ -1,0 +1,8 @@
+---
+#dependencies
+ldap_toolbox_project_gpg: https://ltb-project.org/lib/RPM-GPG-KEY-LTB-project
+ldap_toolbox_project_url: https://ltb-project.org/rpm/$releasever/$basearch
+
+freeradius_release_gpg: http://packages.networkradius.com/pgp/packages@networkradius.com
+freeradius_release_url: http://packages.networkradius.com/releases/centos/$releasever/repo/
+...

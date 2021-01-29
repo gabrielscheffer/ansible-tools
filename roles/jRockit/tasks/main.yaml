@@ -1,0 +1,23 @@
+---
+
+##Check if jRockit was already installed
+- name: Check jRockit folder existance
+  stat:
+    path: "{{ jrockit_path }}"
+  register: folder_jvm
+
+##If necessary, installs jRockit
+- name: Install jRockit JDK
+  include: install_jrockit.yaml
+  when: not folder_jvm.stat.exists
+
+##Set jRockit JDK path and options on catalina.sh
+- name: Configure catalina.sh to JRockit
+  include: config_catalina_sh.yaml
+  when: "'tomcat5' in server_instance"
+
+##Set jRockit JDK path and options on run.conf
+- name: Configure run.conf to JRockit
+  include: config_run_conf.yaml
+  when: "'jboss6' in server_instance"
+...

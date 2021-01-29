@@ -1,25 +1,36 @@
 ---
 
-- include: locale_timezone.yml
+- name: Setup facts
+  setup:
+    gather_subset:
+      - 'network'
 
-- name: "Add Alias rm cp mv with -i in /etc/bashrc"
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- include: timezone.yml
+
+- name: "Add Alias rm cp mv with -i in {{ bashrc_file }}"
+  tags: common
   blockinfile:
-    dest: /etc/bashrc
+    dest: "{{ bashrc_file }}"
     state: present
     insertafter: "^# vim:ts=4:sw=4"
     block: |
       alias rm='rm -i'
       alias cp='cp -i'
       alias mv='mv -i'
+      alias ll='ls -ahlF --color=auto'
 
-- name: "Installing essential packages"
-  yum: name={{ item }} state=present enablerepo=epel update_cache=yes
-  with_items: "{{ packages }}"
+- include: redhat-custom.yml
+  when: ansible_facts['os_family'] == "RedHat"
 
-- name: "Disable EPEL repo for security purposes"
-  command: "yum-config-manager --disable epel"
+- include: debian-custom.yml
+  when: ansible_facts['os_family'] == "Debian"
 
-- name: "Disable Extras repo for security purposes"
-  command: "yum-config-manager --disable extras"
+- include: network.yml
+  when: fresh_install is defined
 
-- include: selinux.yml
+- include: ntpconf.yml

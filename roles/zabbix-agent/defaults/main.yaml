@@ -1,0 +1,10 @@
+---
+hostname: "{{ inventory_hostname }}"
+zabbix_logfilesize: 10
+zabbix_server: 192.168.1.100
+zabbix_release_key: https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+zabbix_remote_command: yes
+zabbix_conf_path: /etc/zabbix/zabbix_agentd.d
+#Adicionar na variável abaixo separados por virgula -> Exemplo "/opt/scripts/recovery-wildfly.sh,/opt/scripts/recovery-jboss6.sh"
+zabbix_recovery_scripts: ""
+...

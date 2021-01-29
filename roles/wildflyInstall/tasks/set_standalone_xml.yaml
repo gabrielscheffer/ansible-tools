@@ -1,0 +1,25 @@
+---
+- name: Set standalone.xml by template
+  template:
+    src: standalone.xml.j2
+    dest: "{{ standalone_xml }}"
+    force: yes
+
+- name: Read old Standalone.xml to get Datasources 
+  shell: cat "{{ old_standalone_xml }}"
+  register: data
+
+- name: Set Datasources as Ansible Facts
+  set_fact:
+    datasources_xml: "{{ data.stdout | regex_search('<datasources>[\\s\\S]*?<\/datasources>')}}"
+
+- name: Insert Datasources
+  blockinfile:
+    path: "{{ instance_path }}/standalone/configuration/standalone.xml"
+    block: "{{ datasources_xml }}"
+    marker: "<!--{mark} DATASOURCE BLOCK FOR {{ server_instance }} -->"
+    backup: yes
+    insertafter: <subsystem xmlns="urn:jboss:domain:datasources:5.0">
+
+
+...

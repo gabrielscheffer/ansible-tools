@@ -1,5 +1,0 @@
----
-
-- name: Create users using htpasswd for OpenShift on {{ path_password_file }}
-  htpasswd: path="{{ path_password_file }}" name="{{ item.user }}" password="{{ item.pass }}"
-  with_items: "{{ htpasswd_auth }}"

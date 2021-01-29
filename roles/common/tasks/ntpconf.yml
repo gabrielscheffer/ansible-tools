@@ -1,0 +1,30 @@
+---
+
+- name: Making sure ntp is installed
+  when: ansible_facts['os_family'] == "RedHat"
+  yum:
+    name: ntp
+    state: present
+  tags: common-ntpconf
+
+- name: Making sure ntp is installed
+  when: ansible_facts['os_family'] == "Debian"
+  apt:
+    name: ntp
+    state: present
+  tags: common-ntpconf
+
+- name: Configuring ntp.conf via template ntp.conf.j2
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify:
+  - restart ntp
+  tags: common-ntpconf
+
+- name: Making sure ntpd is running and enabled
+  service:
+    name: "{{ ntp_service_name }}"
+    state: started
+    enabled: yes
+  tags: common-ntpconf

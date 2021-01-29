@@ -1,0 +1,39 @@
+---
+  - include_vars: "{{ server_instance }}.yaml"
+    
+##Install Wildfly 18.0.1 on /opt
+  - name: Install Wildfly 18.0.1.Final
+    include: install_wildfly.yaml
+
+##Configure Wildfly settings
+  - name: Create and set Standalone.xml
+    include: set_standalone_xml.yaml
+
+#Configure JVM settings
+  - name: Create and set Standalone.conf
+    include: set_standalone_conf.yaml
+   
+##Configure Wildfly startup
+  - name: Create and set Startup.sh
+    include: set_startup_sh.yaml
+
+##Change log name and include exports on Wildfly startup script
+  - name: Include Log and export info on standalone.sh
+    include: set_standalone_sh.yaml
+
+##Create symbolic links for Log folder and User access configuration
+  - name: Set Log folder and User Access
+    include: log_and_access_links.yaml
+
+##Copy drivers to modules folder
+  - name: Deploy Database Drivers
+    include: deploy_database_drivers.yaml
+      
+##Copy static page content to welcome-content
+  - name: Copy static page content to new instance
+    include: welcome_content.yaml
+
+##Copy application files and deploy them
+  - name: Deploy apps from old instance - "{{ server_instance }}"
+    include: deploy.yaml
+...

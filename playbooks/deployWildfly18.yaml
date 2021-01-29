@@ -1,0 +1,18 @@
+---
+- hosts: java_br
+  become: yes
+  vars_prompt:
+    - name: node_name
+      prompt: "Wildfly Folder (e.g. \"wildfly10\")"
+      private: no
+      default: wildfly10
+    - name: server_instance
+      prompt: "Instance Name (e.g. \"wildfly18\")"
+      private: no
+ 
+  vars:
+    - old_instance_path: "/opt/{{ node_name }}"
+    - instance_path: "/opt/wf18-{{ server_instance }}"
+    - wildfly_pkg: wildfly-18.0.1.Final.tar.gz
+  roles:
+   - wildflyInstall

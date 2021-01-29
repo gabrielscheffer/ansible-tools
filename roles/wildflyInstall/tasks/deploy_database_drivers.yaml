@@ -1,0 +1,7 @@
+---
+- name: Deploy Microsoft SQL Server Driver
+  shell: "cp -aRf {{ drivers_folder }}/main {{ instance_path }}/modules/system/layers/base/com/microsoft/"
+
+- name: Deploy IBM DB/2 Server Driver
+  shell: "cp -aRf {{ drivers_folder }}/ibm {{ instance_path }}/modules/system/layers/base/com/"
+...

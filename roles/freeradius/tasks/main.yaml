@@ -1,0 +1,59 @@
+---
+
+- name: Install GPG key from official LDAP Toolbox Project Repo
+  tags: freeradius-agent
+  when: ansible_facts['os_family'] == "RedHat"
+  rpm_key:
+    key: "{{ ldap_toolbox_project_gpg }}"
+    state: present
+
+- name: Install repo from default official LDAP Toolbox Project
+  tags: freeradius-agent
+  when: ansible_facts['os_family'] == "RedHat"
+  yum_repository:
+    name: ltb-project
+    description: LTB project packages
+    baseurl: "{{ ldap_toolbox_project_url }}"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+    enabled: no
+    state: present
+
+- name: Install GPG key from official Network Radius Repo
+  tags: freeradius-agent
+  when: ansible_facts['os_family'] == "RedHat"
+  rpm_key:
+    key: "{{ freeradius_release_gpg }}"
+    state: present
+
+- name: Install repo from default official Network Radius
+  tags: freeradius-agent
+  when: ansible_facts['os_family'] == "RedHat"
+  yum_repository:
+    name: networkradius
+    description: NetworkRADIUS-$releasever
+    baseurl: "{{ freeradius_release_url }}"
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/packages.networkradius.com.gpg
+    enabled: no
+    state: present
+
+- name: Install the latest version of freeradius from official release repo
+  tags: freeradius-agent
+  when: ansible_facts['os_family'] == "RedHat"
+  yum:
+    name: 
+      - openldap-ltb
+      - freeradius
+      - freeradius-utils
+    enablerepo: networkradius,ltb-project
+    state: present
+
+- name: Making sure freeradius is running and enabled
+  when: ansible_facts['os_family'] == "RedHat"
+  tags: freeradius-agent
+  service:
+    name: radiusd
+    state: started
+    enabled: yes
+...

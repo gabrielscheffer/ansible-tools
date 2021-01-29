@@ -1,0 +1,18 @@
+---
+home_folder: "~"
+deploy_folder: "{{ home_folder }}/deploy"
+deploy_failed_folder: "{{ deploy_folder }}/failed"
+packagefile: deploy20200302
+temp_folder: "/tmp/packagetemp{{ ansible_date_time.date }}"
+# back_node_list: list example
+  # - { name: wildfly10-node, project: artifact.war }
+# front_node_list: list example
+  # - { name: wildfly10-node, project: frontend_folder, context: app }
+node_base_folder: "/opt/{{ item.name }}"
+deploy_backup_folder: "{{ deploy_folder }}/backup/{{ lookup('pipe', 'date +\"%Y-%m-%d_%H%M\"') }}"
+wildfly_deployment_folder: "{{ node_base_folder }}/standalone/deployments"
+wildfly_welcome_folder: "{{ node_base_folder }}/welcome-content/{{ item.context }}"
+wildfly_log_file: "{{ node_base_folder }}/standalone/log/{{ item.name }}.log"
+jboss6_deployment_folder: "{{ node_base_folder }}/server/webapps"
+tomcat5_deployment_folder: "{{ node_base_folder }}/webapps"
+...

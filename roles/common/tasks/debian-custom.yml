@@ -1,0 +1,27 @@
+---
+
+- name: "Installing mandadory packages"
+  tags: common
+  apt: 
+    name: "ca-certificates"
+    state: latest
+    update_cache: yes
+
+- name: "Installing essential packages"
+  tags: common
+  apt: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+
+- name: "Update tzdata to latest"
+  tags: common
+  apt: 
+    name: "tzdata"
+    state: latest
+    update_cache: yes
+
+- name: "Clean orphan and unused packages from apt"
+  tags: common
+  apt:
+    autoclean: yes

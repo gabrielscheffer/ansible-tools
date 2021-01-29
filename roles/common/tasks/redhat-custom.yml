@@ -1,0 +1,41 @@
+---
+
+#- include: satellite-bootstrap.yml
+#  when: cloud_account is not defined and ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version']|int > 6
+
+- include: epel-repo.yml
+
+- name: "Installing mandadory packages"
+  tags: common
+  yum: 
+    name: "ca-certificates"
+    state: latest
+    update_cache: yes
+    disablerepo: "epel"
+
+- name: "Installing essential packages"
+  tags: common
+  yum: 
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    enablerepo: "{{ subscription_enablerepo }}"
+
+- name: "Update tzdata to latest"
+  tags: common
+  yum: 
+    name: "tzdata"
+    state: latest
+    update_cache: yes
+
+- name: "Disable EPEL repo for security purposes"
+  tags: common
+  command: "yum-config-manager --disable epel"
+
+- name: "Disable Extras repo for security purposes"
+  tags: common
+  command: "yum-config-manager --disable extras"
+
+- name: "Clean orphan and unused packages from YUM"
+  tags: common
+  command: yum clean all

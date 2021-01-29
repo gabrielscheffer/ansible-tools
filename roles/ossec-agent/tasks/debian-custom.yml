@@ -1,0 +1,19 @@
+---
+- name: Import default official Ossec GPG key.
+  tags: ossec-agent
+  apt_key:
+    url: "{{ ossec_release_key }}"
+    state: present
+
+- name: Install default official Ossec Release Repo
+  tags: ossec-agent
+  apt_repository:
+    filename: atomic
+    repo: "{{ ossec_release_url_x86_64 }}"
+    state: present
+
+- name: Install the latest version of ossec agent from official release repo
+  tags: ossec-agent
+  apt:
+    name: "{{ ossec_agent_package_name }}"
+    state: present

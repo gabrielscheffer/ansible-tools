@@ -1,0 +1,11 @@
+---
+- hosts: java_br
+  roles:
+   - deployWeb
+  vars:
+    wildfly: yes
+    back_node_list:
+      - { name: wildflynode_name, project: artifact.ear }
+    front_node_list:
+      - { name: wildflynode_name, project: frontend_folder, context: app}
+...

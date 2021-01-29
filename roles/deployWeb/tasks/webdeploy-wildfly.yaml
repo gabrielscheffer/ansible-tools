@@ -1,0 +1,153 @@
+---
+#------------------- WILDFLY ----------------------------------------------#
+- debug:
+    msg: "[Wildfly-Backend] wildfly_deployment_folder={{ wildfly_deployment_folder }},deploy_backup_folder={{ deploy_backup_folder }}"
+  with_items: "{{ back_node_list }}"
+  when: back_node_list is defined
+
+- debug:
+    msg: "[Wildfly-Frontend] wildfly_welcome_folder={{ wildfly_welcome_folder }},deploy_backup_folder={{ deploy_backup_folder }}"
+  with_items: "{{ front_node_list }}"
+  when: front_node_list is defined
+
+#------------------- BACKEND ----------------------------------------------#
+- name: "[Wildfly-Backend] Create backup folder using back_node_list"
+  file:
+    path: "{{ deploy_backup_folder }}"
+    state: directory
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- name: "[Wildfly-Backend] Backup deploy using back_node_list to {{ deploy_backup_folder }}"
+  ignore_errors: yes
+  copy:
+    remote_src: yes
+    mode: preserve
+    src: "{{ wildfly_deployment_folder }}/{{ item.project }}"
+    dest: "{{ deploy_backup_folder }}"
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- name: "[Wildfly-Backend] Undeploy using back_node_list"
+  become: yes
+  file:
+    path: "{{ wildfly_deployment_folder }}/{{ item.project }}.deployed"
+    state: absent
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- name: "[Wildfly-Backend] Remove folder using back_node_list"
+  become: yes
+  file:
+    path: "{{ wildfly_deployment_folder }}/{{ item.project }}"
+    state: absent
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+# TODO trocar owner e group para java
+- name: "[Wildfly-Backend] Copy from dodeploy using back_node_list to {{ wildfly_deployment_folder }}"
+  become: yes
+  copy:
+    remote_src: yes
+    mode: preserve
+    src: "{{ deploy_folder }}/dodeploy/{{ item.project }}"
+    dest: "{{ wildfly_deployment_folder }}"
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+# TODO trocar owner e group para java
+- name: "[Wildfly-Backend] Deploy using back_node_list"
+  become: yes
+  file:
+    path: "{{ wildfly_deployment_folder }}/{{ item.project }}.dodeploy"
+    state: touch
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- name: Deploy handler
+  block: #The Ansible way of doing Try, Catch
+    - name: "Wait for 3 minutes until the file {{ item.project }}.deployed is present before continuing"
+      register: result_deploy
+      wait_for:
+        path: "{{ wildfly_deployment_folder }}/{{ item.project }}.deployed"
+        timeout: 180
+      with_items: "{{ back_node_list }}"
+      when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+  rescue: #The Ansible way of doing Try, Catch
+    # TODO Rollback do backup
+    - name: "[Wildfly-Backend] Failed deploy - Cat server log using back_node_list"
+      register: result_log
+      shell: "cat {{ wildfly_log_file }}"
+      with_items: "{{ back_node_list }}"
+      when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+    - debug:
+       var: result_log
+
+    - name: "[Wildfly-Backend] Failed deploy - Move artifacts from dodeploy using back_node_list to failed folder"
+      shell: "rm -rf {{ deploy_failed_folder }}/{{ item.project }} || mv {{ deploy_folder }}/dodeploy/{{ item.project }} {{ deploy_failed_folder }}"
+      with_items: "{{ back_node_list }}"
+      when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- debug:
+   var: result_deploy
+
+#------------------- CLEANUP ----------------------------------------------#
+- name: "[Wildfly-Backend] Cleanup dodeploy files"
+  file:
+    path: "{{ deploy_folder }}/dodeploy/{{ item.project }}"
+    state: absent
+  with_items: "{{ back_node_list }}"
+  when: "back_node_list is defined and ('war' in item.project or 'ear' in item.project)"
+
+- fail:
+    msg: "[Wildfly-Backend] Exit failed deploy"
+  when: result_deploy.failed is defined and result_deploy.failed
+
+#------------------- FRONTEND ----------------------------------------------#
+- name: "[Wildfly-Frontend] Create backup folder using back_node_list"
+  file:
+    path: "{{ deploy_backup_folder }}"
+    state: directory
+  with_items: "{{ front_node_list }}"
+  when: "front_node_list is defined and ('war' not in item.project or 'ear' not in item.project)"
+
+- name: "[Wildfly-Frontend] Backup live deploy using front_node_list to {{ deploy_backup_folder }}"
+  ignore_errors: yes
+  copy:
+    remote_src: yes
+    mode: preserve
+    src: "{{ wildfly_welcome_folder }}/{{ item.project }}"
+    dest: "{{ deploy_backup_folder }}"
+  with_items: "{{ front_node_list }}"
+  when: "front_node_list is defined and ('war' not in item.project or 'ear' not in item.project)"
+
+- name: "[Wildfly-Frontend] Remove folder using front_node_list"
+  become: yes
+  file:
+    path: "{{ wildfly_welcome_folder }}/{{ item.project }}"
+    state: absent
+  with_items: "{{ front_node_list }}"
+  when: "front_node_list is defined and ('war' not in item.project or 'ear' not in item.project)"
+
+# TODO trocar owner e group para java
+- name: "[Wildfly-Frontend] Copy from dodeploy using front_node_list to {{ wildfly_welcome_folder }}"
+  become: yes
+  copy:
+    remote_src: yes
+    mode: preserve
+    src: "{{ deploy_folder }}/dodeploy/{{ item.project }}"
+    dest: "{{ wildfly_welcome_folder }}"
+  with_items: "{{ front_node_list }}"
+  when: "front_node_list is defined and ('war' not in item.project or 'ear' not in item.project)"
+
+#------------------- CLEANUP ----------------------------------------------#
+# TODO: Restart frontend nodes ?!
+
+- name: "[Wildfly-Frontend] Cleanup dodeploy files"
+  file:
+    path: "{{ deploy_folder }}/dodeploy/{{ item.project }}"
+    state: absent
+  with_items: "{{ front_node_list }}"
+  when: "front_node_list is defined and ('war' not in item.project or 'ear' not in item.project)"
+...

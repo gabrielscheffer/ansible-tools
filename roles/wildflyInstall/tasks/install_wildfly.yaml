@@ -1,0 +1,33 @@
+---
+- name: Create temp folder
+  file:
+    path: "/tmp/wildfly"
+    state: directory
+
+- name: Create install folder
+  file:
+    path: "{{ instance_path }}"
+    state: directory
+
+- name: "Copy {{ wildfly_pkg }} file to server"
+  copy:
+     src: "{{ wildfly_pkg }}"
+     dest: "/tmp/{{ wildfly_pkg }}"
+
+- name: Unpackage package
+  unarchive:
+    remote_src: true
+    src: "/tmp/{{ wildfly_pkg }}"
+    dest: "/tmp/wildfly"
+    extra_opts: 
+    - --strip-components=1
+
+- name: Install Wildfly
+  shell: "rsync -ar /tmp/wildfly/* {{ instance_path }}"
+
+- name: Clean temp
+  file:
+    path:
+      - "/tmp/wildfly"
+      - "/tmp/{{ wildfly_pkg }}"
+    state: absent

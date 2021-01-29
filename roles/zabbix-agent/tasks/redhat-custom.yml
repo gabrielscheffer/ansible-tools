@@ -1,0 +1,31 @@
+---
+- name: Import default official Zabbix GPG key.
+  rpm_key:
+    key: "{{ zabbix_release_key }}"
+    state: present
+    
+- name: Install default official Zabbix Release Repo
+  tags: zabbix-agent
+  when: ansible_facts['distribution_major_version']|int == 6
+  yum:
+    name: "{{ zabbix_release_url_el6 }}"
+    state: present
+  retries: 3
+  delay: 10
+
+- name: Install default official Zabbix Release Repo
+  tags: zabbix-agent
+  when: ansible_facts['distribution_major_version']|int == 7
+  yum:
+    name: "{{ zabbix_release_url }}"
+    state: present
+  retries: 3
+  delay: 10
+
+- name: Install the latest version of Zabbix Agent from official release repo
+  tags: zabbix-agent
+  yum:
+    name: zabbix-agent
+    enablerepo: zabbix
+    state: present
+...
