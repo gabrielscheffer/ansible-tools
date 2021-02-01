@@ -1,4 +1,4 @@
 galaxy
-tmp
+ansible.log
 *.zip
 *.tar.gz
