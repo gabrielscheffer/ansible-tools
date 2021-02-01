@@ -33,3 +33,63 @@
 
   roles:
     - bertvv.dhcp
+
+- name: "Install DNS server"
+  hosts: services
+  become: true
+  vars:
+    bind_statistics_channels: true
+    bind_statistics_allow:
+      - any
+    bind_allow_query:
+      - any
+    bind_listen_ipv4:
+      - any
+    # bind_acls:
+    #   - name: acl1
+    #     match_list:
+    #       - 10.11.0/16
+    bind_forwarders:
+      - '192.168.133.1'
+    bind_recursion: true
+    bind_query_log: [ {file: 'data/query.log', size: 1G} ]
+    bind_check_names: 'warn'
+    # bind_zone_minimum_ttl: "2D"
+    # bind_zone_ttl: "2W"
+    bind_zone_time_to_refresh: "1H"
+    # bind_zone_time_to_retry: "2H"
+    # bind_zone_time_to_expire: "2W"
+    bind_statistics_host: "{{ ansible_default_ipv4.address }}"
+
+    bind_zones:
+      - name: 'gablab.com'
+        primaries:
+          - 192.168.133.10
+        networks:
+          - '192.168.133'
+        name_servers:
+          - ns1.gablab.com.
+        hostmaster_email: admin
+        hosts:
+          - name: services
+            ip: 192.168.133.10
+            aliases:
+              - ns1
+        mail_servers:
+          - name: mail
+            ip: 192.168.133.10
+            preference: 10
+        # services:
+        #   - name: _ldap._tcp
+        #     weight: 100
+        #     port: 88
+        #     target: srv010
+        # text:
+        #   - name: _kerberos
+        #     text: KERBEROS.ACME-INC.COM
+        #   - name: '@'
+        #     text:
+        #       - 'some text'
+        #       - 'more text'
+  roles:
+    - bertvv.bind

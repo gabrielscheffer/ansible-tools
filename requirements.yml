@@ -16,3 +16,5 @@
   name: stackhpc.libvirt-vm
 - src: bertvv.dhcp
   name: bertvv.dhcp
+- src: bertvv.bind
+  name: bertvv.bind
