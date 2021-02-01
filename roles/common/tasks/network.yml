@@ -1,4 +1,9 @@
 ---
+
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+    
 - name: "Disable IPv6 on All interfaces via sysctl.conf"
   tags: common-network
   sysctl:
@@ -23,7 +28,7 @@
     state: stopped
     enabled: no
   tags: common-firewall
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 7
+  when: "'firewalld' in ansible_facts.packages"
 
 - name: Disable service firewalld and ensure it is masked
   systemd:
@@ -31,7 +36,7 @@
     enabled: no
     masked: yes
   tags: common-firewall
-  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 7
+  when: "'firewalld' in ansible_facts.packages"
 
 - name: Making sure iptables is stopped and disabled
   service:
