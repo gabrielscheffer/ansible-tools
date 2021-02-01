@@ -1,6 +1,6 @@
 ---
 - name: Ensure that Libvirt is configured
-  hosts: all
+  hosts: hypervisor
   vars:
     libvirt_host_pools:
       - name: home-pool

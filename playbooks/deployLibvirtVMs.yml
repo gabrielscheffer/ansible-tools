@@ -1,6 +1,6 @@
 ---
 - name: Create VMs
-  hosts: all
+  hosts: hypervisor
   vars:
     libvirt_vms:
       - name: 'services'

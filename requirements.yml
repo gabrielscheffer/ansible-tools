@@ -14,3 +14,5 @@
   name: stackhpc.libvirt-host
 - src: stackhpc.libvirt-vm
   name: stackhpc.libvirt-vm
+- src: bertvv.dhcp
+  name: bertvv.dhcp

@@ -1,0 +1,35 @@
+---
+- name: "Install DHCP server"
+  hosts: services
+  become: true
+  vars:
+    dhcp_global_default_lease_time: 28800   # 8hrs
+    dhcp_global_max_lease_time: 604800       # 7 days
+    dhcp_global_subnet_mask: 255.255.255.0
+    dhcp_global_broadcast_address: 192.168.133.255
+    dhcp_global_routers: 192.168.133.1
+    dhcp_global_domain_name: gablab.com
+    dhcp_global_domain_name_servers:
+      - 192.168.133.1
+    dhcp_global_bootp: allow
+    dhcp_global_booting: allow
+    dhcp_global_next_server: 192.168.133.3
+    dhcp_global_filename: boot.img
+
+    dhcp_subnets:
+      - ip: 192.168.133.0
+        netmask: 255.255.255.0
+        domain_name_servers:
+          - 192.168.133.10
+        range_begin: 192.168.133.100
+        range_end: 192.168.133.254
+
+    dhcp_hosts:
+      - name: services
+        mac: '52:54:00:75:d4:a9'
+        ip: 192.168.133.10
+
+    dhcp6_enable: false
+
+  roles:
+    - bertvv.dhcp
